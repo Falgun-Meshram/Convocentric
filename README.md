@@ -2,7 +2,7 @@
 
 Messaging Web application allowing real time text, media transmission.
 
-Add the .env file to the root project
+Add the .env file to the root directory
 
 .env file
 

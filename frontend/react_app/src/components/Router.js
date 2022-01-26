@@ -8,10 +8,10 @@ import NotFound from './NotFound';
 const Router = () => (
   <BrowserRouter>
     <Routes>
-        <Route path="/chat" element={<App/>} />
-        <Route path="/" element={<Login/>} />
-        <Route path="/signup" element={<SignUp/>} />
-        <Route path="*" element={<NotFound/>} />
+      <Route path="/chat" element={<App />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   </BrowserRouter>
 );

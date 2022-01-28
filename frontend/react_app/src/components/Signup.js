@@ -3,7 +3,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import { Container, Row, Col, Image, Form, Button } from 'react-bootstrap';
 
 import '../css/Signup.css';
-import Login from './Login';
+import Login from './Signin';
 
 export default function SignUp() {
     return (

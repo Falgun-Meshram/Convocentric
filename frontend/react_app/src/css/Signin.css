@@ -1,0 +1,12 @@
+.customButton{
+    background-color: #2A4CBF!important;
+    color: white !important;
+    border-radius: 25px !important;
+    width: 100%;
+  }
+  
+  .landing_img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }

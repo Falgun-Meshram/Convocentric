@@ -5,8 +5,6 @@ import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import '../css/Signup.css';
 
 
-
-
 export default function SignUp() {
     const [userName, updateUserName] = useState("");
     const [email, updateEmail] = useState("");

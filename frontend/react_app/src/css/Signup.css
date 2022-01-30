@@ -1,5 +1,5 @@
 .background{
-    background-image: url(https://via.placeholder.com/926x1117.png);
+    background-image: url(../images/landing_img.svg);
     background-size: cover;
     background-position: top;
     min-height: 100%;
@@ -14,4 +14,15 @@
 }
 .formColor{
     color: #4566DA
+}
+p ,a{ 
+    margin: 0px; 
+    color :#1C3FB5; 
+    padding: 0px 20px 0px 0px;
+    font-size: 16px;
+    text-align: center; 
+}
+a{
+    text-decoration: none;
+    font-size: 22px;
 }

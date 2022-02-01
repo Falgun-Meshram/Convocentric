@@ -62,13 +62,13 @@ export default function SignUp() {
                         <Form.Group className="mb-3" controlId="form.userName">
                             <Form.Label className='formColor' >User Name</Form.Label>
                             <Form.Control required type="text" placeholder="Enter an username" onChange={handleUserName} />
-                            <Form.Control.Feedback type="invalid">Please provide a valid name.</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">Please provide a valid name</Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="Form.email">
                             <Form.Label className='formColor' >Email address</Form.Label>
                             <Form.Control required pattern='[\w\.]+@([\w]+\.)+[\w]{2,4}$' type="email" placeholder="name@example.com" onChange={handleEmail} />
-                            <Form.Control.Feedback type="invalid">Please provide a valid email.</Form.Control.Feedback>
+                            <Form.Control.Feedback type="invalid">Please provide a valid email</Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="form.password">
@@ -91,7 +91,7 @@ export default function SignUp() {
                     </Form>
                     <div className='text-center' >
                         <p className='text-center' style={{ paddingTop: '1rem' }} >Already have an account?</p>
-                        <Link to="/">Sign In</Link>
+                        <Link to="/" >Sign In</Link>
                     </div>
 
                 </Col>

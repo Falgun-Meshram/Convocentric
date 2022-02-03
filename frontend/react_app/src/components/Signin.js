@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -9,11 +9,11 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import landing_img from '../images/landing_img.svg'
 import '../css/Signin.css';
 
-export default function Signin(){
+export default function Signin() {
 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        username:'',
+        username: '',
         password: ''
     })
 
@@ -26,44 +26,44 @@ export default function Signin(){
         console.log(formData);
     }
 
-    return(
-            <Row style={{ padding: '0px', margin: '0px'}}>
-            <Col style={{ padding: '0px', margin: '0px'}} xs={12} sm={12} md={6} lg={6} xl={6}>
-                <img className="landing_img" src={landing_img}/>
-               </Col>
+    return (
+        <Row style={{ padding: '0px', margin: '0px' }}>
+            <Col style={{ padding: '0px', margin: '0px' }} xs={12} sm={12} md={6} lg={6} xl={6}>
+                <img className="landing_img" src={landing_img} />
+            </Col>
             <Col xs={12} sm={12} md={6} lg={6} xl={6}>
-                <Row style={{ padding: '0px 20px', margin: '50px 0px 0px 0px'}}>
+                <Row style={{ padding: '0px 20px', margin: '50px 0px 0px 0px' }}>
                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                        <p style={{ marginBottom: '0px', textAlign: 'center' ,color: "#0A194E", fontSize: '22px' }}>Convocentric</p>
-                        <p style={{ marginTop: '30px', marginBottom: '30px', textAlign: 'center', color: '#4566DA', fontSize: '15px'  }}>Welcome to Convocentric</p>
+                        <p style={{ marginBottom: '0px', textAlign: 'center', color: "#0A194E", fontSize: '22px' }}>Convocentric</p>
+                        <p style={{ marginTop: '30px', marginBottom: '30px', textAlign: 'center', color: '#4566DA', fontSize: '15px' }}>Welcome to Convocentric</p>
                     </Col>
-                </Row>    
-                <Row style={{ padding: '0px 100px', margin: '0px'}}>
+                </Row>
+                <Row style={{ padding: '0px 100px', margin: '0px' }}>
                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                         <Form onSubmit={(e) => handleSubmit(e)}>
-                        <Form.Group className="mb-3">
-                            <Form.Label style={{color: '#4A6BDB'}}>Username</Form.Label>
-                            <Form.Control onChange={(e) => setFormData({...formData, username: e.target.value})} id="username" name="username" value={formData.username} type="text" placeholder="Username" />
-                            <Form.Text className="text-muted">
-                            </Form.Text>
-                        </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label style={{ color: '#4A6BDB' }}>Username</Form.Label>
+                                <Form.Control onChange={(e) => setFormData({ ...formData, username: e.target.value })} id="username" name="username" value={formData.username} type="text" placeholder="Username" />
+                                <Form.Text className="text-muted">
+                                </Form.Text>
+                            </Form.Group>
 
-                        <Form.Group className="mb-3">
-                            <Form.Label style={{color: '#4A6BDB'}}> 
-                                Password
-                                <OverlayTrigger
-                                    placement="right"
-                                    overlay={
-                                    <Tooltip id="info_tooltip">
-                                        Your password must be atleast 8 characters, and must contain atleast
-                                        one capital letter, one small letter and one number and one special character.
-                                    </Tooltip>}
-                                >
-                                    <i style={{ marginLeft: '10px', color: 'green', fontSize: '20px', cursor: 'pointer' }} className="fa fa-info-circle"></i>
-                                </OverlayTrigger>
-                            </Form.Label>
-                            <Form.Control onChange={(e) => setFormData({...formData, password: e.target.value})} id="password" name="password" value={formData.password} type="password" placeholder="Password" />
-                        </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label style={{ color: '#4A6BDB' }}>
+                                    Password
+                                    <OverlayTrigger
+                                        placement="right"
+                                        overlay={
+                                            <Tooltip id="info_tooltip">
+                                                Your password must be atleast 8 characters, and must contain atleast
+                                                one capital letter, one small letter and one number and one special character.
+                                            </Tooltip>}
+                                    >
+                                        <i style={{ marginLeft: '10px', color: 'green', fontSize: '20px', cursor: 'pointer' }} className="fa fa-info-circle"></i>
+                                    </OverlayTrigger>
+                                </Form.Label>
+                                <Form.Control onChange={(e) => setFormData({ ...formData, password: e.target.value })} id="password" name="password" value={formData.password} type="password" placeholder="Password" />
+                            </Form.Group>
                             <Row style={{ margin: '0px', padding: '0px' }}>
                                 <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                     <p style={{ color: '#5E7DE0', cursor: 'pointer', fontSize: '14px', marginTop: '2px', textAlign: 'right' }} onClick={() => redirectPage('/forgot_password')}>
@@ -72,7 +72,7 @@ export default function Signin(){
                                 </Col>
                             </Row>
                             <Row style={{ margin: '0px', padding: '0px' }}>
-                                <Col xs={12} sm={12} md={{offset: 4, span: 4}} lg={{offset: 3, span: 5}} xl={{offset: 3, span: 5}}>
+                                <Col xs={12} sm={12} md={{ offset: 4, span: 4 }} lg={{ offset: 3, span: 5 }} xl={{ offset: 3, span: 5 }}>
                                     <Button size="md" className="customButton" type="submit">
                                         Sign in
                                     </Button>
@@ -80,16 +80,16 @@ export default function Signin(){
                             </Row>
                             <Row style={{ margin: '10px 0px 0px 0px', padding: '0px' }}>
                                 <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                    <p style={{ margin: '0px', color :'#2A4CBF', padding: '15px 20px 5px 0px', fontSize: '15px', textAlign: 'center' }}>Don’t have an account yet? </p>
-                                    <p onClick={() => redirectPage('/signup')} style={{ cursor: 'pointer', margin: '0px', color :'#1C3FB5', padding: '0px 20px 0px 0px',fontSize: '22px', textAlign: 'center' }}>Create an account</p>
+                                    <p style={{ margin: '0px', color: '#2A4CBF', padding: '15px 20px 5px 0px', fontSize: '15px', textAlign: 'center' }}>Don’t have an account yet? </p>
+                                    <p onClick={() => redirectPage('/signup')} style={{ cursor: 'pointer', margin: '0px', color: '#1C3FB5', padding: '0px 20px 0px 0px', fontSize: '22px', textAlign: 'center' }}>Create an account</p>
                                 </Col>
                             </Row>
-                            
+
                         </Form>
                     </Col>
                 </Row>
-                </Col>
-            </Row>
+            </Col>
+        </Row>
     )
-}   
+}
 

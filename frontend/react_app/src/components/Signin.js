@@ -34,11 +34,11 @@ export default function Signin() {
             <Col xs={12} sm={12} md={6} lg={6} xl={6}>
                 <Row style={{ padding: '0px 20px', margin: '50px 0px 0px 0px' }}>
                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                        <p style={{ marginBottom: '0px', textAlign: 'center', color: "#0A194E", fontSize: '22px' }}>Convocentric</p>
-                        <p style={{ marginTop: '30px', marginBottom: '30px', textAlign: 'center', color: '#4566DA', fontSize: '15px' }}>Welcome to Convocentric</p>
+                        <p style={{ marginTop: '90px', marginBottom: '50px', textAlign: 'center', color: "#0A194E", fontSize: '30px', fontWeight: '500' }}>Convocentric</p>
+                        <p style={{ marginTop: '30px', marginBottom: '30px', textAlign: 'center', color: '#4566DA', fontSize: '20px', fontWeight: '500' }}>Welcome to Convocentric</p>
                     </Col>
                 </Row>
-                <Row style={{ padding: '0px 100px', margin: '0px' }}>
+                <Row style={{ padding: '0px 110px', margin: '20px' }}>
                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                         <Form onSubmit={(e) => handleSubmit(e)}>
                             <Form.Group className="mb-3">
@@ -64,15 +64,15 @@ export default function Signin() {
                                 </Form.Label>
                                 <Form.Control onChange={(e) => setFormData({ ...formData, password: e.target.value })} id="password" name="password" value={formData.password} type="password" placeholder="Password" />
                             </Form.Group>
-                            <Row style={{ margin: '0px', padding: '0px' }}>
+                            <Row style={{ margin: '0px', padding: '0px', marginTop: '-10px' }}>
                                 <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                     <p style={{ color: '#5E7DE0', cursor: 'pointer', fontSize: '14px', marginTop: '2px', textAlign: 'right' }} onClick={() => redirectPage('/forgot_password')}>
                                         Forgot Password ?
                                     </p>
                                 </Col>
                             </Row>
-                            <Row style={{ margin: '0px', padding: '0px' }}>
-                                <Col xs={12} sm={12} md={{ offset: 4, span: 4 }} lg={{ offset: 3, span: 5 }} xl={{ offset: 3, span: 5 }}>
+                            <Row style={{ margin: '0px', padding: '0px', marginTop: '35px' }}>
+                                <Col xs={12} sm={12} md={{ offset: 6, span: 6 }} lg={{ offset: 3, span: 5 }} xl={{ offset: 3, span: 5 }}>
                                     <Button size="md" className="customButton" type="submit">
                                         Sign in
                                     </Button>

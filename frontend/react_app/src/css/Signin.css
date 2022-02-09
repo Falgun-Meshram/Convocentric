@@ -1,10 +1,17 @@
 .customButton{
     background-color: #2A4CBF!important;
+    border-color: #2A4CBF !important;
     color: white !important;
-    border-radius: 25px !important;
     width: 100%;
   }
-  
+
+  .customButtonChangePassword{
+    border-color: #162B71;
+    background-color: #162B71;
+    color: white !important;
+    width: 100%;
+  }
+
   .landing_img{
     height: 100%;
     width: 100%;

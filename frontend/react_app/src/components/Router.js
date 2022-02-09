@@ -4,6 +4,7 @@ import App from './App';
 import Signin from './Signin';
 import SignUp from './Signup';
 import NotFound from './NotFound';
+import ProfilePage from './ProfilePage';
 
 const Router = () => (
   <BrowserRouter>
@@ -12,7 +13,9 @@ const Router = () => (
       <Route path="/" element={<Signin />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/signin" element={<Signin />} />
+      <Route path="/profile"element={<ProfilePage />} />
       <Route path="*" element={<NotFound />} />
+      
     </Routes>
   </BrowserRouter>
 );

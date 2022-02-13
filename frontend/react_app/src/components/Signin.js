@@ -39,12 +39,15 @@ export default function Signin() {
                 </Row>
                 <Row >
                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                        <Form className='formAlign' onSubmit={(e) => handleSubmit(e)}>
-                            <Form.Group className="mb-3">
+
+                        <Form onSubmit={(e) => handleSubmit(e)}>
+                            <Form.Group className="mb-3" noValidate>
+
                                 <Form.Label style={{ color: '#4A6BDB' }}>Username</Form.Label>
-                                <Form.Control onChange={(e) => setFormData({ ...formData, username: e.target.value })} id="username" name="username" value={formData.username} type="text" placeholder="Username" />
-                                <Form.Text className="text-muted">
-                                </Form.Text>
+                                <Form.Control required onChange={(e) => setFormData({ ...formData, username: e.target.value })} id="username" name="username" value={formData.username} type="text" placeholder="Username" />
+                                <Form.Control.Feedback type="invalid">Please provide a valid name</Form.Control.Feedback>
+                                {/* <Form.Text className="text-muted">
+                                </Form.Text> */}
                             </Form.Group>
 
                             <Form.Group className="mb-3">
@@ -61,7 +64,8 @@ export default function Signin() {
                                         <i style={{ marginLeft: '10px', color: 'green', fontSize: '20px', cursor: 'pointer' }} className="fa fa-info-circle"></i>
                                     </OverlayTrigger>
                                 </Form.Label>
-                                <Form.Control onChange={(e) => setFormData({ ...formData, password: e.target.value })} id="password" name="password" value={formData.password} type="password" placeholder="Password" />
+                                <Form.Control required pattern='(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })} id="password" name="password" value={formData.password} type="password" placeholder="Password" />
                             </Form.Group>
                             {/* <Row style={{ margin: '0px', padding: '0px', marginTop: '-10px' }}>
                                 <Col xs={12} sm={12} md={12} lg={12} xl={12}>

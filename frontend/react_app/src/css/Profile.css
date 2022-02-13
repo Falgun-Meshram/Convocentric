@@ -1,0 +1,82 @@
+@media only screen and (min-width: 300px) {
+    .profile_picture_change{
+        padding:0px;
+        margin: 0px;
+        position: absolute;
+        top: 85px;
+        left: 72px;
+        cursor: pointer;
+      }
+}
+
+@media only screen and (min-width: 600px) {
+    .profile_picture_change{
+        padding:0px;
+        margin: 0px;
+        position: absolute;
+        top: 85px;
+        left: 72px;
+        cursor: pointer;
+      }    
+}
+
+@media only screen and (min-width: 768px) {
+    .profile_picture_change{
+        padding:0px;
+        margin: 0px;
+        position: absolute;
+        top: 85px;
+        left: 70px;
+        cursor: pointer;
+      }
+}
+
+@media only screen and (min-width: 992px) {
+    .profile_picture_change{
+        padding:0px;
+        margin: 0px;
+        position: absolute;
+        top: 85px;
+        left: 70px;
+        cursor: pointer;
+      }
+}
+
+@media only screen and (min-width: 1200px) {
+    .profile_picture_change{
+        padding:0px;
+        margin: 0px;
+        position: absolute;
+        top: 82px;
+        left: 90px;
+        cursor: pointer;
+      }
+}
+
+.circular_square { 
+    border-radius: 50%;
+    width:100px;
+    height:100px;
+    object-fit: cover; 
+    margin: 0px 20px 10px 10px;
+}
+  
+.profile_picture_upload > input{
+    visibility:hidden;
+    width:0;
+    height:0;
+}
+
+.customButton{
+background-color: #2A4CBF!important;
+border-color: #2A4CBF !important;
+color: white !important;
+width: 100%;
+}
+
+.customButtonChangePassword{
+border-color: #162B71;
+background-color: #162B71;
+color: white !important;
+width: 100%;
+}

@@ -12,6 +12,7 @@ import { faTimes, faCamera } from "@fortawesome/free-solid-svg-icons"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import Dialog from "react-bootstrap-dialog";
+import axiosInstance from './AxiosInstance';
 
 export default function Profile() {
 
@@ -19,10 +20,11 @@ export default function Profile() {
 
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        fisrstname: '',
-        lastname: '',
-        emailid :'',
-        profile_picture: ''
+        firstName: '',
+        lastName: '',
+        email :'',
+        profilePicture: '',
+        userName: '',
     })
 
     const redirectPage = (page) => {
@@ -32,6 +34,22 @@ export default function Profile() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
+        const options = {
+            method: 'POST',
+            url: 'edit_profile/',
+            data: formData
+        };
+   
+        axiosInstance.request(options).then(function (response) {
+            if(response.data.ok){
+                let updatedUser = response.data.user;
+                setFormData(updatedUser);
+            }else{
+                alert(response.data.error)
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
     }
 
     const editProfilePicture = () => {
@@ -54,12 +72,12 @@ export default function Profile() {
             let profile_picture_file = e.target.files[0];
 
             getBase64(profile_picture_file, (result) => {
-                setFormData({...formData, profile_picture: result});
+                setFormData({...formData, profilePicture: result});
             });
         }
 
     const removeProfilePicture = () => {
-        setFormData({...formData, profile_picture: ''});
+        setFormData({...formData, profilePicture: ''});
         }
        
         const removeProfilePictureRef = () => {
@@ -102,7 +120,7 @@ export default function Profile() {
                 <Row>
                     <Col sm={12} md={2} lg={2} xl={2}> 
                     <div style={{ position: 'relative' }}>
-                        <img src={formData && formData.profile_picture ? formData.profile_picture : defaultProfilePictureImageDataUri} className="circular_square"/>
+                        <img src={formData && formData.profilePicture ? formData.profilePicture : defaultProfilePictureImageDataUri} className="circular_square"/>
                         <div className="profile_picture_upload">
                             <label htmlFor="profile_picture">
                                 <FontAwesomeIcon onClick={() => editProfilePicture()} color="gray" icon={faCamera} className="profile_picture_change"/>
@@ -112,7 +130,7 @@ export default function Profile() {
                         </div>
                     </Col>
                     <Col sm={12} md={10} lg={10} xl={10}>
-                        <p style={{ textAlign: 'left', color: "#0A194E", fontSize: '20px' }}>@username</p>
+                        <p style={{ textAlign: 'left', color: "#0A194E", fontSize: '20px' }}>@{formData.userName}</p>
                         <p style={{ textAlign: 'left', color: "blue", fontSize: '18px', margin: '2px 5px 0px 0px' }}> Logout</p>
                     </Col>
                 </Row>
@@ -125,22 +143,29 @@ export default function Profile() {
                             <Row style={{ margin: '0px', padding: '0px' }}>
                                 <Col lg={4} xl={4}>
                                     <Form.Group className="mb-3">
-                                        <Form.Control onChange={(e) => setFormData({ ...formData, firstname: e.target.value })} id="firstname" name="firstname" value={formData.firstname} type="text" placeholder="First name" />
+                                        <Form.Control onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} id="firstName" name="firstName" value={formData.firstName} type="text" placeholder="First name" />
                                     </Form.Group> 
                                 </Col>
                                 <Col lg={4} xl={4}>
                                     <Form.Group className="mb-3">
-                                        <Form.Control onChange={(e) => setFormData({ ...formData, lastname: e.target.value })} id="lastname" name="lastname" value={formData.lastname} type="text" placeholder="Last name" />
+                                        <Form.Control onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} id="lastName" name="lastName" value={formData.lastName} type="text" placeholder="Last name" />
                                     </Form.Group> 
                                 </Col>
                             </Row> 
                             <Row style={{ margin: '0px', padding: '0px' }}>
                                     <Col lg={8} xl={8}>
                                         <Form.Group className="mb-3">
-                                            <Form.Control onChange={(e) => setFormData({ ...formData, emailid: e.target.value })} id="emailid" name="emailid" value={formData.emailid} type="text" placeholder="Enter your email" />
+                                            <Form.Control onChange={(e) => setFormData({ ...formData, email: e.target.value })} id="email" name="email" value={formData.email} type="email" placeholder="Enter your email" />
                                         </Form.Group>
                                     </Col> 
-                            </Row>                     
+                            </Row>   
+                            <Row style={{ margin: '0px', padding: '0px' }}>
+                                    <Col lg={8} xl={8}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Control onChange={(e) => setFormData({ ...formData, userName: e.target.value })} id="username" name="username" value={formData.username} type="text" placeholder="Enter Username" />
+                                        </Form.Group>
+                                    </Col> 
+                            </Row>                    
                             <Row style={{ margin: '10px 0px 0px 0px', padding: '0px' }}>
                                 <Col lg={4} xl={4}>
                                     <Button size="md" className="customButton" type="submit">

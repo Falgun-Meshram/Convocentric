@@ -12,7 +12,7 @@ import { faTimes, faCamera } from "@fortawesome/free-solid-svg-icons"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import Dialog from "react-bootstrap-dialog";
-import axiosInstance from './AxiosInstance';
+import axiosInstance from './axiosInstance';
 
 export default function Profile() {
 

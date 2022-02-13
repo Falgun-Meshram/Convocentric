@@ -23,15 +23,21 @@ a{
 }
 
 .chat-list{
-  height: 90vh;
+  height: 95vh;
   overflow-y: scroll !important;
 }
 .message-list{
-  overflow-y: scroll !important;
+  overflow-y: overlay !important;
+  background-color: beige;
+  /* background-image: url(../images/chat_bg.jpg);
+  background-size: cover;
+  background-position: top; */
+  /* padding: 1rem; */
 }
 .input{
-  height: 10vh !important;
-  overflow-y: scroll !important;
+  margin-top: 2rem;
+  height: 5vh !important;
+  overflow-y: overlay !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -6,8 +6,10 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
+
 import landing_img from '../images/landing_img.svg'
 import '../css/Signin.css';
+import axiosInstance from './axiosInstance';
 
 export default function Signin() {
 
@@ -23,6 +25,20 @@ export default function Signin() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const options = {
+            method: 'POST',
+            url: 'login/',
+            data: formData
+        };
+
+        axiosInstance.request(options).then(function (response) {
+
+            console.log(response.data);
+        }).catch(function (error) {
+            console.error(error);
+        });
+        console.log(axiosInstance);
         console.log(formData);
     }
 

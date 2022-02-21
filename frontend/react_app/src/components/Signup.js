@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Spinner, Modal } from 'react-bootstrap';
 
 import '../css/Signup.css';
+import axiosInstance from './axiosInstance';
 
 
 export default function SignUp() {
@@ -16,6 +17,7 @@ export default function SignUp() {
     const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
     const [existingUsername, setExistingUsername] = useState(false);
+    const [existingEmail, setExistingEmail] = useState(false);
     const [show, setShow] = useState(false);
     const [seconds, setSeconds] = useState(5);
     const [signUpSuccess, setSignUpSuccess] = useState(false);
@@ -63,19 +65,46 @@ export default function SignUp() {
         } else {
             setLoading(true);
             setExistingUsername(false);
-            e.preventDefault()
+            setExistingEmail(false)
+
+            e.preventDefault();
+            const options = {
+                method: 'POST',
+                url: 'signup/',
+                data: { username: userName, email, password }
+            };
+
+            axiosInstance.request(options).then(function (response) {
+                const { ok, error } = response.data;
+                console.log(response.data);
+                setLoading(false);
+                if (ok) {
+                    setSeconds(5);
+                    setShow(true);
+                    setValidated(true);
+                    setSignUpSuccess(true)
+                } else {
+                    if (error.username)
+                        setExistingUsername(true);
+                    if (error.email)
+                        setExistingEmail(true)
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+
+
             console.log(`handleSubmited called with`)
             console.log(userName);
             console.log(email);
             console.log(password);
             console.log(confirm);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setLoading(false);
-            // setExistingUsername(true);
-            setSeconds(5);
-            setSignUpSuccess(true);
-            setShow(true);
-            setValidated(true);
+            // setLoading(false);
+            // // setExistingUsername(true);
+            // // setSeconds(5);
+            // setSignUpSuccess(true);
+            // setShow(true);
+            // setValidated(true);
         }
 
     };
@@ -105,6 +134,14 @@ export default function SignUp() {
                         <Form.Group className="mb-3" controlId="Form.email">
                             <Form.Label className='formColor' >Email address</Form.Label>
                             <Form.Control required pattern='[\w\.]+@([\w]+\.)+[\w]{2,4}$' type="email" placeholder="name@example.com" onChange={handleEmail} />
+                            {
+                                existingEmail ?
+                                    <div class='userNameExists'>Email exists already</div>
+
+                                    :
+
+                                    <Form.Control.Feedback type="invalid">Please provide a valid name</Form.Control.Feedback>
+                            }
                             <Form.Control.Feedback type="invalid">Please provide a valid email</Form.Control.Feedback>
                         </Form.Group>
 

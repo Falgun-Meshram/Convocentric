@@ -70,6 +70,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "jest": "^27.4.7",
+    "msw": "^0.38.1",
     "react-test-renderer": "16.14.0"
   },
   "babel": {

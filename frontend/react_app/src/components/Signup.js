@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner, Modal, Alert } from 'react-bootstrap';
 
 import '../css/Signup.css';
 import axiosInstance from './axiosInstance';
@@ -21,6 +21,7 @@ export default function SignUp() {
     const [show, setShow] = useState(false);
     const [seconds, setSeconds] = useState(5);
     const [signUpSuccess, setSignUpSuccess] = useState(false);
+    const [networkError, setNetworkError] = useState(false);
     useEffect(() => {
         let myInterval = setInterval(() => {
             if (seconds > 0) {
@@ -29,7 +30,7 @@ export default function SignUp() {
 
         }, 1000);
         return () => {
-            console.log(`seconds ${seconds} and signup ${signUpSuccess}`);
+            // console.log(`seconds ${seconds} and signup ${signUpSuccess}`);
             if (seconds === 1 && signUpSuccess)
                 navigate("/chat");
             clearInterval(myInterval);
@@ -61,7 +62,6 @@ export default function SignUp() {
             e.stopPropagation();
             e.preventDefault();
             setValidated(true);
-
         } else {
             setLoading(true);
             setExistingUsername(false);
@@ -76,7 +76,8 @@ export default function SignUp() {
 
             axiosInstance.request(options).then(function (response) {
                 const { ok, error } = response.data;
-                console.log(response.data);
+                console.log(`response is `);
+                console.log(response);
                 setLoading(false);
                 if (ok) {
                     setSeconds(5);
@@ -90,7 +91,10 @@ export default function SignUp() {
                         setExistingEmail(true)
                 }
             }).catch(function (error) {
-                console.error(error);
+                console.log('error is');
+                console.log(error);
+                setNetworkError(true);
+                setLoading(false)
             });
 
 
@@ -140,9 +144,8 @@ export default function SignUp() {
 
                                     :
 
-                                    <Form.Control.Feedback type="invalid">Please provide a valid name</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">Please provide a valid email</Form.Control.Feedback>
                             }
-                            <Form.Control.Feedback type="invalid">Please provide a valid email</Form.Control.Feedback>
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="form.password">
@@ -166,6 +169,19 @@ export default function SignUp() {
                                 <Button type="submit" size="lg" className="btn btn-primary btn-block lg">Sign Up</Button>
                             }
                         </div>
+                        {
+                            networkError ?
+                                <div className='text-center' >
+                                    <Alert style={{ marginTop: "1rem" }} variant="danger" onClose={() => setNetworkError(false)} dismissible>
+                                        <Alert.Heading>Network error!</Alert.Heading>
+                                        <p>
+                                            Could not connect to the server. Please try again after a while.
+                                        </p>
+                                    </Alert>
+                                </div>
+                                :
+                                ""
+                        }
                     </Form>
                     <div className='text-center' >
                         <p className='text-center' style={{ paddingTop: '1rem' }} >Already have an account?</p>

@@ -57,7 +57,7 @@ describe("<Signin>", () => {
             </BrowserRouter>
         );
         const e = fireEvent.click(screen.getByText("Sign Up"))
-        expect(screen.getByText("Already have an account")).toBeInTheDocument()
+        expect(screen.getByText("Already have an account?")).toBeInTheDocument()
 
     }
     )

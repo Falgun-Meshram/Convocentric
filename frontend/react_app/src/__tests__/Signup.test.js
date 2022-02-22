@@ -72,6 +72,74 @@ describe("<Signup>", () => {
         expect(c).toBeInTheDocument();
 
     })
+    it("Username exists already", async () => {
+        server.use(
+            rest.post('http://localhost:4001/api/signup', (req, res, ctx) => {
+                return res(
+                    ctx.status(200),
+                    ctx.json({
+                        ok: false,
+                        error: {
+                            username: "Username exists already"
+                        }
+                    }))
+            }),
+        )
+        const { container, debug, rerender } = render(
+            <BrowserRouter>
+                <SignUp />
+            </BrowserRouter>
+        );
+        const userNameInput = screen.getByPlaceholderText("Enter an username");
+        const emailInput = screen.getByPlaceholderText("name@example.com");
+        const passwordInput = screen.getByPlaceholderText("Enter a password");
+        const confirmInput = screen.getByPlaceholderText("Confirm password");
+
+        userEvent.type(userNameInput, "asd")
+        userEvent.type(emailInput, "na@ex.com")
+        userEvent.type(passwordInput, "asdfQW!@34")
+        userEvent.type(confirmInput, "asdfQW!@34")
+
+        userEvent.click(screen.getByText("Sign Up"))
+
+        const c = await screen.findByText(/UserName exists already/i);
+        expect(c).toBeInTheDocument();
+
+    })
+    it("Email exists already", async () => {
+        server.use(
+            rest.post('http://localhost:4001/api/signup', (req, res, ctx) => {
+                return res(
+                    ctx.status(200),
+                    ctx.json({
+                        ok: false,
+                        error: {
+                            email: "Email exists already"
+                        }
+                    }))
+            }),
+        )
+        const { container, debug, rerender } = render(
+            <BrowserRouter>
+                <SignUp />
+            </BrowserRouter>
+        );
+        const userNameInput = screen.getByPlaceholderText("Enter an username");
+        const emailInput = screen.getByPlaceholderText("name@example.com");
+        const passwordInput = screen.getByPlaceholderText("Enter a password");
+        const confirmInput = screen.getByPlaceholderText("Confirm password");
+
+        userEvent.type(userNameInput, "asd")
+        userEvent.type(emailInput, "na@ex.com")
+        userEvent.type(passwordInput, "asdfQW!@34")
+        userEvent.type(confirmInput, "asdfQW!@34")
+
+        userEvent.click(screen.getByText("Sign Up"))
+
+        const c = await screen.findByText(/Email exists already/i);
+        expect(c).toBeInTheDocument();
+
+    })
     it("Input Validation: Correct input given", async () => {
         const { container, debug, rerender } = render(
             <BrowserRouter>

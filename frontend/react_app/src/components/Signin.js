@@ -56,7 +56,7 @@ export default function Signin() {
                 <Row >
                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
 
-                        <Form onSubmit={(e) => handleSubmit(e)}>
+                        <Form className='formAlign' onSubmit={(e) => handleSubmit(e)}>
                             <Form.Group className="mb-3" noValidate>
 
                                 <Form.Label style={{ color: '#4A6BDB' }}>Username</Form.Label>

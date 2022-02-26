@@ -172,11 +172,11 @@ export default function Profile() {
                                         Save
                                     </Button>
                                 </Col>
-                                <Col lg={4} xl={4}>
+                                {/* <Col lg={4} xl={4}>
                                     <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/Profilepage')} >
                                         Change Password
                                     </Button>
-                                </Col>
+                                </Col> */}
                             </Row>
                         </Form>
                     </Col>

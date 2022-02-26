@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Form, Button, Spinner, Modal } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Spinner, Modal, Alert } from 'react-bootstrap';
 
 import '../css/Signup.css';
+import axiosInstance from './axiosInstance';
 
+//TODO Signin
+// 1. Center the button
+// 2. Add loader
+// 3. Handle wrong username/password
+// 4. Handle network error
+// 5. Save session storage
+// 6. Write Tests accordingly
+
+// TODO Profile Page
+// 1. Complete testing
+// 2. Change design to signup/signup???
 
 export default function SignUp() {
 
@@ -16,9 +28,11 @@ export default function SignUp() {
     const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
     const [existingUsername, setExistingUsername] = useState(false);
+    const [existingEmail, setExistingEmail] = useState(false);
     const [show, setShow] = useState(false);
     const [seconds, setSeconds] = useState(5);
     const [signUpSuccess, setSignUpSuccess] = useState(false);
+    const [networkError, setNetworkError] = useState(false);
     useEffect(() => {
         let myInterval = setInterval(() => {
             if (seconds > 0) {
@@ -27,7 +41,7 @@ export default function SignUp() {
 
         }, 1000);
         return () => {
-            console.log(`seconds ${seconds} and signup ${signUpSuccess}`);
+            // console.log(`seconds ${seconds} and signup ${signUpSuccess}`);
             if (seconds === 1 && signUpSuccess)
                 navigate("/chat");
             clearInterval(myInterval);
@@ -59,23 +73,53 @@ export default function SignUp() {
             e.stopPropagation();
             e.preventDefault();
             setValidated(true);
-
         } else {
             setLoading(true);
             setExistingUsername(false);
-            e.preventDefault()
+            setExistingEmail(false)
+
+            e.preventDefault();
+            const options = {
+                method: 'POST',
+                url: 'signup/',
+                data: { username: userName, email, password }
+            };
+
+            axiosInstance.request(options).then(function (response) {
+                const { ok, error } = response.data;
+                console.log(`response is `);
+                console.log(response);
+                setLoading(false);
+                if (ok) {
+                    setSeconds(5);
+                    setShow(true);
+                    setValidated(true);
+                    setSignUpSuccess(true)
+                } else {
+                    if (error.username)
+                        setExistingUsername(true);
+                    if (error.email)
+                        setExistingEmail(true)
+                }
+            }).catch(function (error) {
+                console.log('error is');
+                console.log(error);
+                setNetworkError(true);
+                setLoading(false)
+            });
+
+
             console.log(`handleSubmited called with`)
             console.log(userName);
             console.log(email);
             console.log(password);
             console.log(confirm);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setLoading(false);
-            // setExistingUsername(true);
-            setSeconds(5);
-            setSignUpSuccess(true);
-            setShow(true);
-            setValidated(true);
+            // setLoading(false);
+            // // setExistingUsername(true);
+            // // setSeconds(5);
+            // setSignUpSuccess(true);
+            // setShow(true);
+            // setValidated(true);
         }
 
     };
@@ -105,7 +149,14 @@ export default function SignUp() {
                         <Form.Group className="mb-3" controlId="Form.email">
                             <Form.Label className='formColor' >Email address</Form.Label>
                             <Form.Control required pattern='[\w\.]+@([\w]+\.)+[\w]{2,4}$' type="email" placeholder="name@example.com" onChange={handleEmail} />
-                            <Form.Control.Feedback type="invalid">Please provide a valid email</Form.Control.Feedback>
+                            {
+                                existingEmail ?
+                                    <div class='userNameExists'>Email exists already</div>
+
+                                    :
+
+                                    <Form.Control.Feedback type="invalid">Please provide a valid email</Form.Control.Feedback>
+                            }
                         </Form.Group>
 
                         <Form.Group className="mb-3" controlId="form.password">
@@ -129,6 +180,19 @@ export default function SignUp() {
                                 <Button type="submit" size="lg" className="btn btn-primary btn-block lg">Sign Up</Button>
                             }
                         </div>
+                        {
+                            networkError ?
+                                <div className='text-center' >
+                                    <Alert style={{ marginTop: "1rem" }} variant="danger" onClose={() => setNetworkError(false)} dismissible>
+                                        <Alert.Heading>Network error!</Alert.Heading>
+                                        <p>
+                                            Could not connect to the server. Please try again after a while.
+                                        </p>
+                                    </Alert>
+                                </div>
+                                :
+                                ""
+                        }
                     </Form>
                     <div className='text-center' >
                         <p className='text-center' style={{ paddingTop: '1rem' }} >Already have an account?</p>

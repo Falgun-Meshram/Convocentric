@@ -5,6 +5,17 @@ import { Container, Row, Col, Form, Button, Spinner, Modal, Alert } from 'react-
 import '../css/Signup.css';
 import axiosInstance from './axiosInstance';
 
+//TODO Signin
+// 1. Center the button
+// 2. Add loader
+// 3. Handle wrong username/password
+// 4. Handle network error
+// 5. Save session storage
+// 6. Write Tests accordingly
+
+// TODO Profile Page
+// 1. Complete testing
+// 2. Change design to signup/signup???
 
 export default function SignUp() {
 

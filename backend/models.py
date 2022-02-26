@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from .managers import CustomUserManager
 
 AUTH_USER_MODEL = getattr(settings, "AUTH_USER_MODEL", "auth.User")
 
@@ -12,18 +11,15 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50, null=True, default=None)
     last_name = models.CharField(max_length=50, null=True, default=None)
     email = models.EmailField(_('email address'), unique=True, null=False)
-    created_on = models.DateTimeField(default=timezone.now)
-    updated_on = models.DateTimeField(default=timezone.now)
+    created_on = models.DateTimeField(default=timezone.now())
+    updated_on = models.DateTimeField(default=timezone.now())
     profile_picture = models.TextField(null=True, default='', blank=True)
     last_passwords = models.TextField(null=True)
     locked = models.BooleanField(null=True)
     last_login = models.DateTimeField(null=True)
-    username = None
+    username = models.CharField(max_length=50, unique=True, null=False, default='')
 
-    USERNAME_FIELD = 'email'    
     REQUIRED_FIELDS = []
-
-    objects = CustomUserManager()
 
     def __str__(self):
         return self.email
@@ -35,7 +31,7 @@ class Country(models.Model):
 class Notification(models.Model):
 
     message = models.TextField(blank=False, default='')
-    created_on = models.DateTimeField(default=timezone.now)
+    created_on = models.DateTimeField(default=timezone.now())
     type = models.CharField(blank=False, max_length=20, default='')
     read = models.BooleanField(default=False)
     user = models.ForeignKey(

@@ -1,6 +1,22 @@
+p ,a{ 
+    margin: 0px; 
+    color :#1C3FB5;
+    font-size: 16px;
+    text-align: center; 
+}
+a{
+    text-decoration: none;
+    font-size: 22px;
+}
+.userNameExists{
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: .875em;
+    color: #dc3545;
+}
 .background{
     background-image: url(../images/landing_img.svg);
-    background-size: fill;
+    background-size: cover;
     background-position: top;
     min-height: 100%;
     height: 100vh;
@@ -14,15 +30,4 @@
 }
 .formColor{
     color: #4566DA
-}
-p ,a{ 
-    margin: 0px; 
-    color :#1C3FB5; 
-    padding: 0px 20px 0px 0px;
-    font-size: 16px;
-    text-align: center; 
-}
-a{
-    text-decoration: none;
-    font-size: 22px;
 }

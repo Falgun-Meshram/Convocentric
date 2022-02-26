@@ -1,3 +1,18 @@
+p ,a{ 
+  margin: 0px; 
+  color :#1C3FB5;
+  font-size: 16px;
+  text-align: center; 
+}
+a{
+  text-decoration: none;
+  font-size: 22px;
+}
+.formAlign{
+  padding-left: 12rem;
+  padding-right: 12rem;
+  justify-content: center;
+}
 .App {
   text-align: center;
 }
@@ -5,6 +20,24 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.chat-list{
+  height: 95vh;
+  overflow-y: scroll !important;
+}
+.message-list{
+  overflow-y: overlay !important;
+  background-color: beige;
+  /* background-image: url(../images/chat_bg.jpg);
+  background-size: cover;
+  background-position: top; */
+  /* padding: 1rem; */
+}
+.input{
+  margin-top: 2rem;
+  height: 5vh !important;
+  overflow-y: overlay !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -19,6 +19,7 @@ export default function Profile() {
     let CustomDialog = useRef(null);
 
     const navigate = useNavigate();
+    const [validated, setValidated] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -32,7 +33,14 @@ export default function Profile() {
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        if (e.currentTarget.checkValidity() === false){
+            console.log('in');
+            e.stopPropagation();
+            e.preventDefault();
+            setValidated(true);  
+        }else{
+            setValidated(true);
+            e.preventDefault();
         console.log(formData);
         const options = {
             method: 'POST',
@@ -49,7 +57,9 @@ export default function Profile() {
             }
         }).catch(function (error) {
             console.error(error);
-        });
+        });  
+        }
+      
     }
 
     const editProfilePicture = () => {
@@ -139,23 +149,27 @@ export default function Profile() {
                         <p style={{ textAlign: 'left', paddingLeft: '10px', color: "blue", fontSize: '18px' }}>Edit Details</p>
                     </Col>
                     <Col sm={12} md={12} lg={12} xl={12}>
-                        <Form onSubmit={(e) => handleSubmit(e)}>
+                        <Form noValidate validated={validated}  onSubmit={(e) => handleSubmit(e)}>
                             <Row style={{ margin: '0px', padding: '0px' }}>
                                 <Col lg={4} xl={4}>
                                     <Form.Group className="mb-3">
-                                        <Form.Control onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} id="firstName" name="firstName" value={formData.firstName} type="text" placeholder="First name" />
+                                        <Form.Control required onChange={(e) => setFormData({ ...formData, firstName: e.target.value })} id="firstName" name="firstName" value={formData.firstName} type="text" placeholder="First name" />
+                                        <Form.Control.Feedback type="invalid">Please provide a valid firstname</Form.Control.Feedback>
+
                                     </Form.Group> 
                                 </Col>
                                 <Col lg={4} xl={4}>
                                     <Form.Group className="mb-3">
-                                        <Form.Control onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} id="lastName" name="lastName" value={formData.lastName} type="text" placeholder="Last name" />
+                                        <Form.Control required  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })} id="lastName" name="lastName" value={formData.lastName} type="text" placeholder="Last name" />
+                                        <Form.Control.Feedback type="invalid">Please provide a valid lastname</Form.Control.Feedback>
                                     </Form.Group> 
                                 </Col>
                             </Row> 
                             <Row style={{ margin: '0px', padding: '0px' }}>
                                     <Col lg={8} xl={8}>
                                         <Form.Group className="mb-3">
-                                            <Form.Control onChange={(e) => setFormData({ ...formData, email: e.target.value })} id="email" name="email" value={formData.email} type="email" placeholder="Enter your email" />
+                                            <Form.Control required pattern='[\w\.]+@([\w]+\.)+[\w]{2,4}$' onChange={(e) => setFormData({ ...formData, email: e.target.value })} id="email" name="email" value={formData.email} type="email" placeholder="Enter your email" />
+                                            <Form.Control.Feedback type="invalid">Please provide a valid email id</Form.Control.Feedback>
                                         </Form.Group>
                                     </Col> 
                             </Row>   

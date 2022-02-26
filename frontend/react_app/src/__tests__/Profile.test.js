@@ -36,6 +36,13 @@ describe("<Profile>", () => {
  
     }
     )
+    it("Edit details link", () =>{
+        const { container, debug } = render(
+            <BrowserRouter>
+                <Profile />
+            </BrowserRouter>
+        );
+        fireEvent.click() 
   
 });
 

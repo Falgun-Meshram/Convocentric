@@ -42,9 +42,8 @@ describe("<Signin>", () => {
             </BrowserRouter>
         );
         expect(screen.getByText("Please provide a valid name")).toBeInTheDocument();
-        expect(screen.getByText("Please provide a valid email")).toBeInTheDocument();
-        expect(screen.getByText("Your password must be atleast 8 characters, and must contain atleast one capital letter, one small letter and one number and one special character")).toBeInTheDocument();
-        expect(screen.getByText("Password should match")).toBeInTheDocument();
+        // expect(screen.getByText("Your password must be atleast 8 characters, and must contain atleast one capital letter, one small letter and one number and one special character")).toBeInTheDocument();
+
     }
     )
     //TODO Add a network error test case
@@ -54,7 +53,7 @@ describe("<Signin>", () => {
                 console.log(req);
                 return res(ctx.status(400))
             }),
-        )   
+        )
         const { container, debug, rerender } = render(
             <BrowserRouter>
                 <Signin />
@@ -80,7 +79,7 @@ describe("<Signin>", () => {
                     ctx.status(200),
                     ctx.json({
                         ok: false,
-                        error:"Invalid credentials"
+                        error: "Invalid credentials"
                     }))
             }),
         )
@@ -101,26 +100,36 @@ describe("<Signin>", () => {
         expect(c).toBeInTheDocument();
 
     })
-    // it("Input Validation: Correct input given", () => {
+    it("Input Validation: Correct input given", async () => {
+        server.use(
+            rest.post('http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/login/', (req, res, ctx) => {
+                return res(
+                    ctx.status(200),
+                    ctx.json({
+                        ok: true,
+                        error: "Invalid credentials"
+                    }))
+            }),
+        )
 
-    //     //TODO Add the msw to mock the api calls
-    //     const { container, debug } = render(
-    //         <BrowserRouter>
-    //             <Signin />
-    //             <App />
-    //         </BrowserRouter>
-    //     );
-    //     console.log(`container ${container}`);
-    //     const userNameInput = screen.getByPlaceholderText("Username");
-    //     const passwordInput = screen.getByPlaceholderText("Password");
+        const { container, debug } = render(
+            <BrowserRouter>
+                <Signin />
+                <App />
+            </BrowserRouter>
+        );
+        console.log(`container ${container}`);
+        const userNameInput = screen.getByPlaceholderText("Username");
+        const passwordInput = screen.getByPlaceholderText("Password");
 
-    //     fireEvent.change(userNameInput, { target: { value: "asd" } })
-    //     fireEvent.change(passwordInput, { target: { value: "asdfQW!@34" } })
-    //     const e = fireEvent.click(screen.getByText("Sign Up"))
-    //     expect(screen.getByText("Profile Data")).toBeInTheDocument();
+        fireEvent.change(userNameInput, { target: { value: "asd" } })
+        fireEvent.change(passwordInput, { target: { value: "asdfQW!@34" } })
+        const e = fireEvent.click(screen.getByText("Sign in"))
+        const c = await screen.findByText(/Please click/i);
+        expect(screen.getByText("Profile Data")).toBeInTheDocument();
 
-    // }
-    // )
+    }
+    )
     // it("Redirect to Signup", () => {
     //     const { container, debug } = render(
     //         <BrowserRouter>

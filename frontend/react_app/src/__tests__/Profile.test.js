@@ -16,7 +16,14 @@ const server = setupServer(
             ctx.status(200),
             ctx.json({
                 ok: true,
-                error: ""
+                error: "",
+                user: {
+                    firstName: 'asd',
+                    lastName: 'tsf',
+                    email: 'test1@test.com',
+                    profilePicture: '',
+                    userName: 'test',
+                }
             }))
     })
 )
@@ -33,7 +40,7 @@ describe("<Profile>", () => {
             </BrowserRouter>
         );
     });
-    it("Profile firstname, last name and email validation",async () => {
+    it("Profile firstname, last name and email validation", async () => {
         const { container, debug } = render(
             <BrowserRouter>
                 <Profile />
@@ -42,17 +49,21 @@ describe("<Profile>", () => {
         const firstname = screen.getByPlaceholderText("First name");
         const lastname = screen.getByPlaceholderText("Last name");
         const email = screen.getByPlaceholderText("Enter your email");
+        const userName = screen.getByPlaceholderText("Enter Username");
         fireEvent.change(firstname, { target: { value: "asd" } })
         fireEvent.change(lastname, { target: { value: "tsf" } })
-        fireEvent.change(email, { target: { value: "asdfQW!@34" } })
+        fireEvent.change(email, { target: { value: "test1@test.com" } })
+        fireEvent.change(userName, { target: { value: "test" } })
+
         const save_button = screen.getByText("Save");
         userEvent.click(screen.getByText("Save"))
         // const password_button = screen.getByPlaceholderText("Change Password");
-        const c = await screen.findByText(/UserName exists already/i);
+        const c = await screen.findByText(/Successfully updated values/i);
         expect(c).toBeInTheDocument();
- 
+
     }
-    )})
+    )
+})
 //     it("Edit details link", () =>{
 //         const { container, debug } = render(
 //             <BrowserRouter>
@@ -60,6 +71,5 @@ describe("<Profile>", () => {
 //             </BrowserRouter>
 //         );
 //         fireEvent.click() 
-  
-// });
 
+// });

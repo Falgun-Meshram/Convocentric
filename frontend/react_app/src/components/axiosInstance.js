@@ -6,7 +6,7 @@ axios.defaults.xsrfHeaderName = "X-CSRFToken";
 
 const axiosInstance = axios.create({
 
-    baseURL: process.env.REACT_APP_BASE_URL,
+    baseURL: 'http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/',
 
     headers: {
 

@@ -6,7 +6,10 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-
+import Spinner from 'react-bootstrap/Spinner'
+import Alert from 'react-bootstrap/Alert'
+import Modal from 'react-bootstrap/Modal';
+import { Link } from 'react-router-dom';
 import landing_img from '../images/landing_img.svg'
 import '../css/Signin.css';
 import axiosInstance from './axiosInstance';
@@ -18,14 +21,22 @@ export default function Signin() {
         username: '',
         password: ''
     })
-
+    const [loading, setLoading] = useState(false);
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const [wrongUsername, setWrongUsername] = useState(false);
+    const [wrongPassword, setWrongPassword] = useState(false);
+    const [networkError, setNetworkError] = useState(false);
     const redirectPage = (page) => {
         navigate(page)
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
+        setLoading(true);
+        setWrongUsername(false);
+        setWrongPassword(false);
+        setNetworkError(false);
         const options = {
             method: 'POST',
             url: 'login/',
@@ -33,10 +44,20 @@ export default function Signin() {
         };
 
         axiosInstance.request(options).then(function (response) {
+            const { ok, error } = response.data;
+            setLoading(false)
 
+            if (ok) {
+                setShow(true)
+            }
+            else {
+                setWrongPassword(true)
+            }
             console.log(response.data);
         }).catch(function (error) {
             console.error(error);
+            setNetworkError(true);
+            setLoading(false);
         });
         console.log(axiosInstance);
         console.log(formData);
@@ -62,6 +83,12 @@ export default function Signin() {
                                 <Form.Label style={{ color: '#4A6BDB' }}>Username</Form.Label>
                                 <Form.Control required onChange={(e) => setFormData({ ...formData, username: e.target.value })} id="username" name="username" value={formData.username} type="text" placeholder="Username" />
                                 <Form.Control.Feedback type="invalid">Please provide a valid name</Form.Control.Feedback>
+
+                                {/* {
+                                wrongUsername ?
+                                    <div class='userNameExists'>You have entered a wrong username</div>
+                                    :
+                            } */}
                                 {/* <Form.Text className="text-muted">
                                 </Form.Text> */}
                             </Form.Group>
@@ -80,8 +107,16 @@ export default function Signin() {
                                         <i style={{ marginLeft: '10px', color: 'green', fontSize: '20px', cursor: 'pointer' }} className="fa fa-info-circle"></i>
                                     </OverlayTrigger>
                                 </Form.Label>
+
                                 <Form.Control required pattern='(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })} id="password" name="password" value={formData.password} type="password" placeholder="Password" />
+                                {
+                                    wrongPassword ?
+                                        <div class='userNameExists'>You have entered wrong credentials</div>
+                                        :
+                                        ''
+                                    // <Form.Control.Feedback type="invalid">Please provide a valid name</Form.Control.Feedback>
+                                }
                             </Form.Group>
                             {/* <Row style={{ margin: '0px', padding: '0px', marginTop: '-10px' }}>
                                 <Col xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -90,13 +125,37 @@ export default function Signin() {
                                     </p>
                                 </Col>
                             </Row> */}
+
+
                             <Row style={{ margin: '0px', padding: '0px', marginTop: '35px' }}>
-                                <Col xs={12} sm={12} md={{ offset: 6, span: 6 }} lg={{ offset: 3, span: 5 }} xl={{ offset: 3, span: 5 }}>
-                                    <Button size="md" className="customButton" type="submit">
-                                        Sign in
-                                    </Button>
-                                </Col>
+                                {loading ? <div className='text-center' >
+                                    <Spinner animation="border" />
+                                </div>
+                                    :
+                                    <Col
+
+                                        xs={12} sm={12} md={{ offset: 6, span: 6 }} lg={{ offset: 3, span: 5 }} xl={{ offset: 3, span: 5 }}>
+                                        <Button size="md" className="btn btn-primary btn-block lg" type="submit" classname='text-center'>
+                                            Sign in
+                                        </Button>
+                                    </Col>
+                                }
                             </Row>
+                            {
+                                networkError ?
+                                    <div className='text-center' >
+                                        <Alert style={{ marginTop: "1rem" }} variant="danger" onClose={() => setNetworkError(false)} dismissible>
+                                            <Alert.Heading>Network error!</Alert.Heading>
+                                            <p>
+                                                Could not connect to the server. Please try again after a while.
+                                            </p>
+                                        </Alert>
+                                    </div>
+                                    :
+                                    ""
+                            }
+
+
                             <Row style={{ margin: '10px 0px 0px 0px', padding: '0px' }}>
                                 <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                                     <p style={{ margin: '0px', color: '#2A4CBF', padding: '15px 20px 5px 0px', fontSize: '15px', textAlign: 'center' }}>Don’t have an account yet? </p>
@@ -108,7 +167,16 @@ export default function Signin() {
                     </Col>
                 </Row>
             </Col>
+            <Modal show={show} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Sign In Successfull</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Please click
+                    <Link to="/chat" > here </Link>
+                    to go to homepage</Modal.Body>
+            </Modal>
         </Row>
+
     )
 }
 

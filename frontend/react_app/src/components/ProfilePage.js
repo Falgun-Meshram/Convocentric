@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Alert from 'react-bootstrap/Alert';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
 import landing_img from '../images/landing_img.svg'
+import { Spinner } from 'react-bootstrap';
 import '../css/Profile.css';
 import { defaultProfilePictureImageDataUri } from "../constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,8 +19,11 @@ import axiosInstance from './axiosInstance';
 export default function Profile() {
 
     let CustomDialog = useRef(null);
-
+    const [loading,setLoading]= useState(false);
+   // const [loading,setLoading]= useState(false);
     const navigate = useNavigate();
+    const [saveSuccessfull,setSaveSuccessful]= useState(false);
+    const [saveUnsuccessfull,setSaveUnsuccessful]= useState(false);
     const [validated, setValidated] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
@@ -33,12 +38,14 @@ export default function Profile() {
     }
 
     const handleSubmit = (e) => {
+        setSaveSuccessful(false)
         if (e.currentTarget.checkValidity() === false){
             console.log('in');
             e.stopPropagation();
             e.preventDefault();
             setValidated(true);  
         }else{
+            setLoading(true)
             setValidated(true);
             e.preventDefault();
         console.log(formData);
@@ -49,10 +56,13 @@ export default function Profile() {
         };
    
         axiosInstance.request(options).then(function (response) {
+            setLoading(false)
             if(response.data.ok){
+               setSaveSuccessful(true)
                 let updatedUser = response.data.user;
                 setFormData(updatedUser);
             }else{
+               
                 alert(response.data.error)
             }
         }).catch(function (error) {
@@ -182,9 +192,28 @@ export default function Profile() {
                             </Row>                    
                             <Row style={{ margin: '10px 0px 0px 0px', padding: '0px' }}>
                                 <Col lg={4} xl={4}>
-                                    <Button size="md" className="customButton" type="submit">
+                                {
+                             saveSuccessfull ?
+                                <div className='text-center' >
+                                    <Alert style={{ marginTop: "1rem" }} variant="success" onClose={() => setSaveSuccessful(false)} dismissible>
+                                        
+                                        <p>
+                                            Successfully updated values.
+                                        </p>
+                                    </Alert>
+                                </div>
+                                :
+                                ""
+                        }<div className='text-center' >
+                        {loading ?
+                            <Spinner animation="border" />
+                            :
+                            <Button size="md" className="customButton" type="submit">
                                         Save
                                     </Button>
+                        }
+                       </div>
+                                   
                                 </Col>
                                 {/* <Col lg={4} xl={4}>
                                     <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/Profilepage')} >

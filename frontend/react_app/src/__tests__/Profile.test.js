@@ -7,7 +7,16 @@ import Profile from '../components/ProfilePage';
 import Signin from '../components/Signin';
 import SignUp from '../components/Signup';
 
-
+const server = setupServer(
+    rest.post("http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/edit_profile", (req, res, ctx) => {
+        return res(
+            ctx.status(200),
+            ctx.json({
+                ok: true,
+                error: ""
+            }))
+    })
+)
 
 describe("<Profile>", () => {
     it("Page should render", () => {
@@ -31,8 +40,8 @@ describe("<Profile>", () => {
         fireEvent.change(passwordInput, { target: { value: "asdfQW!@34" } })
         const save_button = screen.getByPlaceholderText("Save");
         fireEvent.click();
-        const password_button = screen.getByPlaceholderText("Change Password");
-        fireEvent.click();
+        const c = await screen.findByText("Successfully updated values.");
+        expect(c).toBeInTheDocument();
  
     }
     )
@@ -46,3 +55,4 @@ describe("<Profile>", () => {
   
 });
 
+});

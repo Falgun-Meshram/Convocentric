@@ -10,7 +10,7 @@ import Signin from '../components/Signin';
 import SignUp from '../components/Signup';
 
 const server = setupServer(
-    rest.post("http://localhost:4001/api/signup", (req, res, ctx) => {
+    rest.post("http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup", (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({
@@ -47,7 +47,7 @@ describe("<Signup>", () => {
     )
     it("Network Error", async () => {
         server.use(
-            rest.post('http://localhost:4001/api/signup', (req, res, ctx) => {
+            rest.post('http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup', (req, res, ctx) => {
                 return res(ctx.status(400))
             }),
         )
@@ -74,7 +74,7 @@ describe("<Signup>", () => {
     })
     it("Username exists already", async () => {
         server.use(
-            rest.post('http://localhost:4001/api/signup', (req, res, ctx) => {
+            rest.post('http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup', (req, res, ctx) => {
                 return res(
                     ctx.status(200),
                     ctx.json({
@@ -108,13 +108,13 @@ describe("<Signup>", () => {
     })
     it("Email exists already", async () => {
         server.use(
-            rest.post('http://localhost:4001/api/signup', (req, res, ctx) => {
+            rest.post('http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup', (req, res, ctx) => {
                 return res(
                     ctx.status(200),
                     ctx.json({
                         ok: false,
                         error: {
-                            email: "Email exists already"
+                            email: "email exists already"
                         }
                     }))
             }),

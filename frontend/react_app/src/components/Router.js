@@ -4,20 +4,27 @@ import App from './App';
 import Signin from './Signin';
 import SignUp from './Signup';
 import NotFound from './NotFound';
-import ProfilePage from './ProfilePage';
+import ProfilePage from './Profile';
+import Home from './Home';
+import ProtectedRoutes from "./ProtectedRoutes";
 
-const Router = () => (
-  <BrowserRouter>
-    <Routes>
-      <Route path="/chat" element={<App />} />
-      <Route path="/" element={<Signin />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/signin" element={<Signin />} />
-      <Route path="/profile"element={<ProfilePage />} />
-      <Route path="*" element={<NotFound />} />
-      
-    </Routes>
-  </BrowserRouter>
-);
-export default Router;
+export default function Router() {
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Signin />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/chat" element={<App />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  )
+
+}
 

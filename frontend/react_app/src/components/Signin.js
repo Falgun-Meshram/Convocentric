@@ -6,10 +6,9 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-
-import landing_img from '../images/landing_img.svg'
-import '../css/Signin.css';
 import axiosInstance from './axiosInstance';
+import '../css/Signin.css';
+import axios from 'axios'
 
 export default function Signin() {
 
@@ -25,21 +24,24 @@ export default function Signin() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         const options = {
             method: 'POST',
-            url: 'login/',
+            url: process.env.REACT_APP_BASE_URL+'login/',
             data: formData
         };
-
-        axiosInstance.request(options).then(function (response) {
-
-            console.log(response.data);
+        axios.request(options).then(function (response) {
+            if(response.data.ok){
+                let user = response.data.user;
+                localStorage.setItem('isAuth', true);
+                localStorage.setItem("token", response.data.token);
+                localStorage.setItem("user", JSON.stringify(user));
+                redirectPage('/home');
+            }else{
+                console.error('Some error occured.');
+            }
         }).catch(function (error) {
             console.error(error);
         });
-        console.log(axiosInstance);
-        console.log(formData);
     }
 
     return (
@@ -53,7 +55,7 @@ export default function Signin() {
                         <h3 style={{ textAlign: 'center', marginBottom: '3rem', color: '#4566DA' }}>Welcome to Convocentric</h3>
                     </Col>
                 </Row>
-                <Row >
+                <Row>
                     <Col xs={12} sm={12} md={12} lg={12} xl={12}>
 
                         <Form className='formAlign' onSubmit={(e) => handleSubmit(e)}>
@@ -90,11 +92,9 @@ export default function Signin() {
                                     </p>
                                 </Col>
                             </Row> */}
-                            <Row style={{ margin: '0px', padding: '0px', marginTop: '35px' }}>
+                            <Row style={{ margin: '0px', padding: '0px', marginTop: '20px' }}>
                                 <Col xs={12} sm={12} md={{ offset: 6, span: 6 }} lg={{ offset: 3, span: 5 }} xl={{ offset: 3, span: 5 }}>
-                                    <Button size="md" className="customButton" type="submit">
-                                        Sign in
-                                    </Button>
+                                <Button type="submit" size="lg" className="btn btn-primary btn-block">Sign In</Button>
                                 </Col>
                             </Row>
                             <Row style={{ margin: '10px 0px 0px 0px', padding: '0px' }}>

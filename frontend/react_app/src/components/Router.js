@@ -4,7 +4,7 @@ import App from './App';
 import Signin from './Signin';
 import SignUp from './Signup';
 import NotFound from './NotFound';
-import ProfilePage from './Profile';
+import Profile from './Profile';
 import Home from './Home';
 import ProtectedRoutes from "./ProtectedRoutes";
 
@@ -19,7 +19,7 @@ export default function Router() {
         <Route element={<ProtectedRoutes />}>
           <Route path="/home" element={<Home />} />
           <Route path="/chat" element={<App />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

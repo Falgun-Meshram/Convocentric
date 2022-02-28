@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -8,16 +8,18 @@ import '../css/Profile.css';
 import { defaultProfilePictureImageDataUri } from "../constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons"
-import Dialog from "react-bootstrap-dialog";
+// import Dialog from "react-bootstrap-dialog";
 import axiosInstance from './axiosInstance';
+import { Spinner } from 'react-bootstrap';
 
 export default function Profile() {
 
-    let CustomDialog = useRef(null);
-
+    // let CustomDialog = useRef(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [editStatusMsg, setEditStatusMsg] = useState('');
-    const [editDataError, setEditDataError] = useState('')
+    const [editDataError, setEditDataError] = useState('');
+    const [validated, setValidated] = useState(false);
     const [formData, setFormData] = useState({
         id:'',
         password:'',
@@ -82,13 +84,16 @@ export default function Profile() {
     const handleSubmit = (e) => {
 
         e.preventDefault();
-
         if(shallowEqual(formData, originalFormData)){
             setEditDataError(true);
             setEditStatusMsg("You have not changed any values.");
             setTimeout(function () {
                 setEditStatusMsg("");
             }, 5000);
+        }else if (e.currentTarget.checkValidity() === false) {
+            e.stopPropagation();
+            e.preventDefault();
+            setValidated(true);
         }else{
             const options = {
                 method: 'PUT',
@@ -96,13 +101,14 @@ export default function Profile() {
                 data: formData
             };
             axiosInstance.request(options).then(function (response) {
+                setLoading(false);
                 if(response.status === 204){
                     setFormData(formData);
                     setEditStatusMsg('User data saved successfully.');
                     setEditDataError(false);
-                    // setTimeout(() => {
-                    //     setEditStatusMsg('');
-                    // }, 5000);
+                    setTimeout(() => {
+                        setEditStatusMsg('');
+                    }, 5000);
                     localStorage.setItem('user', JSON.stringify(formData))
                 }else{
                     setEditDataError(true);
@@ -136,36 +142,36 @@ export default function Profile() {
         });
     }
 
-    const removeProfilePicture = () => {
-        setFormData({...formData, profile_picture: ''});
-    }
+    // const removeProfilePicture = () => {
+    //     setFormData({...formData, profile_picture: ''});
+    // }
     
-    const removeProfilePictureRef = () => {
-        CustomDialog.show({
-            body:"Are you sure you want to remove your profile picture ?",
-            actions: [
-                Dialog.DefaultAction(
-                    "Remove",
-                    () => {removeProfilePicture()},
-                    "btn-danger"
-                ),
-                Dialog.Action(
-                    "Close",
-                    () => {
-                    if(CustomDialog){
-                        CustomDialog.hide()
-                    }
-                    },
-                    "btn-primary"
-                ),
-                ],
-            });
-    };
+    // const removeProfilePictureRef = () => {
+    //     CustomDialog.show({
+    //         body:"Are you sure you want to remove your profile picture ?",
+    //         actions: [
+    //             Dialog.DefaultAction(
+    //                 "Remove",
+    //                 () => {removeProfilePicture()},
+    //                 "btn-danger"
+    //             ),
+    //             Dialog.Action(
+    //                 "Close",
+    //                 () => {
+    //                 if(CustomDialog){
+    //                     CustomDialog.hide()
+    //                 }
+    //                 },
+    //                 "btn-primary"
+    //             ),
+    //             ],
+    //         });
+    // };
 
     return (
         <Row style={{ padding: '0px', margin: '10% 0%' }}>
             <Col className="shadow-lg" style={{ backgroundColor: '#F6F6F6', border: '1px solid #ebebeb', borderRadius: '20px', padding: '10px 20px' }} sm={12} md={12} lg={{offset: 3, span: 6}} xl={{offset: 3, span: 6}}>
-                 <Row style={{ padding: '0px 0px', margin: '0px 0px 30px 0px' }}>
+                 {/* <Row style={{ padding: '0px 0px', margin: '0px 0px 30px 0px' }}>
                         <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                             <p style={{ marginBottom: '0px', textAlign: 'left', color: "#0A194E", fontSize: '22px' }}>Profile Settings</p>
                             <div style={{ display: "none" }}>
@@ -176,11 +182,11 @@ export default function Profile() {
                                 />
                             </div>
                         </Col>
-                    </Row>
-                <Row>
+                    </Row> */}
+                <Row> 
                     <Col sm={12} md={2} lg={2} xl={2}> 
                     <div style={{ position: 'relative' }}>
-                        <img src={formData && formData.profile_picture ? formData.profile_picture : defaultProfilePictureImageDataUri} className="circular_square"/>
+                        <img alt="profile_photo" src={formData && formData.profile_picture ? formData.profile_picture : defaultProfilePictureImageDataUri} className="circular_square"/>
                         <div className="profile_picture_upload">
                             <label htmlFor="profile_picture">
                                 <FontAwesomeIcon color="gray" icon={faCamera} className="profile_picture_change"/>
@@ -199,23 +205,26 @@ export default function Profile() {
                         <p style={{ textAlign: 'left', paddingLeft: '10px', color: 'black', fontWeight: 'normal', fontSize: '18px' }}>Edit Details</p>
                     </Col>
                     <Col sm={12} md={12} lg={12} xl={12}>
-                        <Form onSubmit={(e) => handleSubmit(e)}>
+                        <Form noValidate validated={validated} onSubmit={(e) => handleSubmit(e)}>
                             <Row style={{ margin: '0px', padding: '0px' }}>
                                 <Col sm={4} md={4} lg={4} xl={4}>
                                     <Form.Group className="mb-3">
-                                        <Form.Control onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} id="first_name" name="first_name" value={formData.first_name || ''} type="text" placeholder="First name" />
+                                        <Form.Control required onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} id="first_name" name="first_name" value={formData.first_name || ''} type="text" placeholder="First name" />
+                                        <Form.Control.Feedback type="invalid">Please provide a valid firstname</Form.Control.Feedback>
                                     </Form.Group> 
                                 </Col>
                                 <Col sm={4} md={4} lg={4} xl={4}>
                                     <Form.Group className="mb-3">
-                                        <Form.Control onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} id="last_name" name="last_name" value={formData.last_name || ''} type="text" placeholder="Last name" />
+                                        <Form.Control required onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} id="last_name" name="last_name" value={formData.last_name || ''} type="text" placeholder="Last name" />
+                                        <Form.Control.Feedback type="invalid">Please provide a valid lastname</Form.Control.Feedback>
                                     </Form.Group> 
                                 </Col>
                             </Row> 
                             <Row style={{ margin: '0px', padding: '0px' }}>
                                 <Col sm={8} md={8} lg={8} xl={8}>
                                     <Form.Group className="mb-3">
-                                        <Form.Control onChange={(e) => setFormData({ ...formData, email: e.target.value })} id="email" name="email" value={formData.email || ''} type="email" placeholder="Enter your email" />
+                                        <Form.Control required pattern='[\w\.]+@([\w]+\.)+[\w]{2,4}$' onChange={(e) => setFormData({ ...formData, email: e.target.value })} id="email" name="email" value={formData.email || ''} type="email" placeholder="Enter your email" />
+                                        <Form.Control.Feedback type="invalid">Please provide a valid email id</Form.Control.Feedback>
                                     </Form.Group>
                                 </Col> 
                             </Row>   
@@ -231,7 +240,15 @@ export default function Profile() {
                                     <p style={{ margin: '0px 0px 10px 0px', color: editDataError?'red':'green'}}>{editStatusMsg}</p>
                                 </Col> 
                             </Row>:''}                 
+                            {loading ?
                             <Row style={{ margin: '10px 0px 0px 0px', padding: '0px' }}>
+                                <Col lg={{span: 2, offset: 3}} xl={{span: 2, offset: 3}}>
+                                    <div className='text-center'>
+                                        <Spinner animation="border" />
+                                    </div>
+                                </Col>
+                            </Row>:
+                            <Row>
                                 <Col lg={4} xl={4}>
                                     <Button size="md" className="customButton" type="submit">
                                         Save
@@ -242,12 +259,13 @@ export default function Profile() {
                                         Back to Home 
                                     </Button>
                                 </Col>
-                                {/* <Col lg={4} xl={4}>
-                                    <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/change_password')} >
-                                        Change Password
-                                    </Button>
-                                </Col> */}
-                            </Row>
+                            </Row>}
+
+                            {/* // <Col lg={4} xl={4}>
+                            //     <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/change_password')} >
+                            //         Change Password
+                            //     </Button>
+                            // </Col>  */}
                         </Form>
                     </Col>
                 </Row>

@@ -10,9 +10,7 @@ import Spinner from 'react-bootstrap/Spinner'
 import Alert from 'react-bootstrap/Alert'
 import Modal from 'react-bootstrap/Modal';
 import { Link } from 'react-router-dom';
-import landing_img from '../images/landing_img.svg'
 import '../css/Signin.css';
-import axiosInstance from './axiosInstance';
 import '../css/Signin.css';
 import axios from 'axios'
 

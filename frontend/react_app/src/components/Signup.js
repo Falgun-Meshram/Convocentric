@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Form, Button, Spinner, Modal, Alert } from 'react-bootstrap';
 import '../css/Signup.css';
-import axiosInstance from './axiosInstance';
 import axios from 'axios';
 
 //TODO Signin

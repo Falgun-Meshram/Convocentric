@@ -1,7 +1,10 @@
 // import logo from '../logo.svg';
 import React from 'react';
-import { Col, Container, Row, Dropdown, InputGroup, DropdownButton, FormControl } from 'react-bootstrap';
+import { Col, Container, Row, Dropdown, InputGroup, DropdownButton, FormControl, Image } from 'react-bootstrap';
 import { ChatList, Input, Button, MessageList, } from 'react-chat-elements';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
+
 
 import '../css/App.css';
 import 'react-chat-elements/dist/main.css';
@@ -453,10 +456,20 @@ function App() {
 
   return (
     <Container fluid style={{ height: '100vh' }} >
-      <Row style={{ height: '100vh' }}>
+      <Row style={{ height: '100vh' }} >
         <Col lg="5" style={{ height: '100vh', }}  >
-          <div style={{ height: '5vh' }}>
-            Profile Data
+          <div div style={{ height: '7vh' }} className='navBar'>
+            <Image roundedCircle src='https://picsum.photos/200' style={{ 'width': '8%' }} />
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                <FontAwesomeIcon icon={faEllipsisVertical} />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>New Group</Dropdown.Item>
+                <Dropdown.Item>Logout</Dropdown.Item>
+                <Dropdown.Item href='/profile' >Settings</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
           <ChatList
             className="chat-list"
@@ -465,10 +478,10 @@ function App() {
           />
         </Col>
         <Col lg="7" style={{ height: '100vh', background: 'aliceBlue' }} >
-          <div style={{ height: '5vh' }}>
+          <div style={{ height: '7vh' }}>
             Group Data
           </div>
-          <div style={{ height: '85vh' }} className='message-list' >
+          <div style={{ height: '82vh' }} className='message-list' >
             <MessageList
               className="message-list"
               lockable

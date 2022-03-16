@@ -1,26 +1,50 @@
-// import logo from '../logo.svg';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Col, Container, Row, Dropdown, InputGroup, DropdownButton, FormControl } from 'react-bootstrap';
 import { ChatList, Input, Button, MessageList, } from 'react-chat-elements';
-
+import WebSocketInstance from "./Socket";
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../css/App.css';
 import 'react-chat-elements/dist/main.css';
-import { useState } from 'react';
 
-// const ws = new WebSocket("wss://ws.bitstamp.net");
-// const apiCall = {
-//   event: "bts:subscribe",
-//   data: { channel: "order_book_btcusd" },
-// };
+function Chat() {
 
-// ws.onopen = (event) => {
-//   console.log(`ws.onopen `);
-//   console.log(event);
-//   ws.send(JSON.stringify(apiCall));
-// };
-
-function App() {
+  const location = useLocation();
   const date = new Date();
+  const navigate = useNavigate();
+  const [currUser, setCurrUser] = useState({});
+
+  useEffect(() => {
+    let user = {};
+    if(localStorage.getItem('user')){
+        user = JSON.parse(localStorage.getItem('user')); 
+    } 
+    setCurrUser(user);
+  }, [])
+
+  const initializeChat = (chatId, message) => {
+
+    // message needs to have senderId and recieverId
+    waitForSocketConnection(() => {
+      WebSocketInstance.fetchMessages(
+        chatId,
+        message
+      );
+    });
+    WebSocketInstance.connect(currUser.id, null);
+  }
+
+  const waitForSocketConnection = (callback) => {
+    setTimeout(function() {
+      if (WebSocketInstance.state() === 1) {
+        callback();
+        return;
+      } else {
+        console.log("wait for connection...");
+        waitForSocketConnection(callback);
+      }
+    }, 100);
+  }
+
   const data = [
     {
       avatar: 'https://facebook.github.io/react/img/logo.svg',
@@ -404,21 +428,6 @@ function App() {
 
   },]
 
-
-  // ws.onmessage = function (event) {
-  //   const json = JSON.parse(event.data);
-  //   console.log(`[message] Data received from server: ${json}`);
-  //   try {
-  //     if ((json.event = "data")) {
-
-  //       console.log(json.data.timestamp);
-  //     }
-  //   } catch (err) {
-  //     //whatever you wish to do with the err
-  //   }
-
-  // };
-
   // const [userMessage, changeUserMessage] = useState("");
   let userMessage = ""
   const [currentGroupId, changeGroupId] = useState("");
@@ -427,8 +436,11 @@ function App() {
     userMessage = e.target.value;
   };
   const handleGroupClick = (group) => {
+
+    // Define message object which has senderId and receiverId
+    let messages = {};
+    initializeChat(group.id, messages);
     console.log(group);
-    changeGroupId(group.id)
   };
   const handleSubmit = (e) => {
     console.log(`handlesubmit called`);
@@ -507,4 +519,4 @@ function App() {
   );
 }
 
-export default App;
+export default Chat;

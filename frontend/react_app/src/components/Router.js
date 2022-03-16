@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import App from './App';
+import Chat from './Chat';
 import Signin from './Signin';
 import SignUp from './Signup';
 import NotFound from './NotFound';
@@ -18,7 +18,7 @@ export default function Router() {
         <Route path="/signin" element={<Signin />} />
         <Route element={<ProtectedRoutes />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/chat" element={<App />} />
+          <Route path="/chat" element={<Chat />} />
           <Route path="/profile" element={<Profile />} />
         </Route>
         <Route path="*" element={<NotFound />} />

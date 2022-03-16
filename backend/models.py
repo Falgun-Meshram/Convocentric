@@ -37,23 +37,17 @@ class Notification(models.Model):
     created_on = models.DateTimeField(default=timezone.now())
     type = models.CharField(blank=False, max_length=20, default='')
     read = models.BooleanField(default=False)
-    user = models.ForeignKey(
-        User, related_name='notifications', on_delete=models.CASCADE)
-    
-class Message(models.Model):
-    user = models.ForeignKey(
-        User, related_name='messages', on_delete=models.CASCADE)
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.user.username
-
+    user = models.ForeignKey(User, related_name='notifications', on_delete=models.CASCADE, default=None)
 
 class Chat(models.Model):
-    participants = models.ManyToManyField(
-        User, related_name='chats', blank=True)
-    messages = models.ManyToManyField(Message, blank=True)
+    participants = models.ManyToManyField(User, related_name='chats', blank=True)
+    messages = models.ManyToManyField('backend.Message', related_name='message_chat', blank=True, default=None)
 
     def __str__(self):
         return "{}".format(self.pk)
+
+class Message(models.Model):
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    chat = models.ForeignKey(Chat, related_name='chat_messages', on_delete=models.CASCADE, default=None)
+    user = models.ForeignKey(User, related_name='user_messages', on_delete=models.CASCADE, default=None)

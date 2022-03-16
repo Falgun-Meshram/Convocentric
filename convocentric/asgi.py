@@ -9,11 +9,12 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/asgi/
 
 import os
 from decouple import config
-from django.core.wsgi import get_wsgi_application
+from django.core.asgi import get_asgi_application
 
 if config('ENV') == 'dev':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'convocentric.settings.dev')
 else:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'convocentric.settings.prod')
 
-application = get_wsgi_application()
+
+application = get_asgi_application()

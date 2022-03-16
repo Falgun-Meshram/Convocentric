@@ -8,6 +8,18 @@ a{
   text-decoration: none;
   font-size: 22px;
 }
+.navBar{
+  height: 7vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.navBar div:last-child {
+  margin-left: auto;
+}
+.dropdown-toggle::after {
+  display: none;
+}
 .formAlign{
   padding-left: 12rem;
   padding-right: 12rem;
@@ -23,7 +35,7 @@ a{
 }
 
 .chat-list{
-  height: 95vh;
+  height: 93vh;
   overflow-y: scroll !important;
 }
 .message-list{

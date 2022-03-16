@@ -74,6 +74,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'convocentric.wsgi.application'
 
+ASGI_APPLICATION = 'convocentric.routing.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 CORS_ALLOW_CREDENTIALS = True

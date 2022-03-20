@@ -36,11 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework.authtoken', 
+    'rest_framework.authtoken',
     'crispy_forms',
     'corsheaders',
     'frontend',
-    'backend'
+    'backend',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -163,7 +164,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_DIRS = [
-   os.path.join(BASE_DIR, "frontend/react_app/build/static"),
+    os.path.join(BASE_DIR, "frontend/react_app/build/static"),
 ]
 
 # Default primary key field type

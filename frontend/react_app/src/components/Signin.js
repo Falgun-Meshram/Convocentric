@@ -51,7 +51,7 @@ export default function Signin() {
                 localStorage.setItem('isAuth', true);
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("user", JSON.stringify(user));
-                redirectPage('/home');
+                redirectPage('/chat');
             }else{
                 setWrongPassword(true);
                 console.error('Some error occured.');

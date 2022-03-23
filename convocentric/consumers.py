@@ -4,16 +4,23 @@ import json
 from backend.models import Message, Chat, User
 from backend.socket_views import get_last_10_messages, get_user, get_current_chat, create_new_chat
 
+
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_messages(self, data):
+        print("`````````````````````````````")
+        print(data)
+        messages = []
         if data['chatId']:
+            print("inside")
             messages = get_last_10_messages(data['chatId'])
         else:
+            print("else")
             chat_id = create_new_chat(data)
 
         fetched_messages = self.messages_to_json(messages) if messages else []
-        message_dict = {'fetched_messages': fetched_messages, 'chat_id': chat_id}
+        message_dict = {
+            'fetched_messages': fetched_messages, 'chat_id': chat_id}
 
         content = {
             'command': 'messages',

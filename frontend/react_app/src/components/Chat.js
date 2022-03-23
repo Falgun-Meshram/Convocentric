@@ -1,10 +1,18 @@
+
+// import logo from '../logo.svg';
+
 import React, { useState, useEffect } from 'react';
-import { Col, Container, Row, Dropdown, InputGroup, DropdownButton, FormControl } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
+import { Col, Container, Row, Dropdown, InputGroup, DropdownButton, FormControl, Image } from 'react-bootstrap';
 import { ChatList, Input, Button, MessageList, } from 'react-chat-elements';
-import WebSocketInstance from "./Socket";
 import { useNavigate, useLocation } from 'react-router-dom';
+
+import WebSocketInstance from "./Socket";
+import axiosInstance from './axiosInstance';
 import '../css/App.css';
 import 'react-chat-elements/dist/main.css';
+import { rest } from 'msw';
 
 function Chat() {
 
@@ -12,12 +20,40 @@ function Chat() {
   const date = new Date();
   const navigate = useNavigate();
   const [currUser, setCurrUser] = useState({});
-
+  const [userList, setUserList] = useState([{
+    avatar: 'https://facebook.github.io/react/img/logo.svg',
+    alt: 'Reactjs',
+    title: 'Facebook',
+    subtitle: 'What are you doing?',
+    date: new Date(),
+    unread: 0,
+    id: '1'
+  }]);
+  console.log(userList);
   useEffect(() => {
     let user = {};
-    if(localStorage.getItem('user')){
-        user = JSON.parse(localStorage.getItem('user')); 
-    } 
+    if (localStorage.getItem('user')) {
+      user = JSON.parse(localStorage.getItem('user'));
+    }
+    const options = {
+      method: "GET",
+      url: "/get_all_users"
+    }
+    let dat = [];
+    axiosInstance.request(options).then((res) => {
+      res.data.users.map((item) =>
+        user.id !== item.id ? dat.push({
+          title: item.username,
+          id: String(item.id),
+          avatar: 'https://facebook.github.io/react/img/logo.svg',
+          alt: 'Reactjs',
+          subtitle: 'What are you doing?',
+          date: new Date(),
+          unread: 0,
+        }) : ""
+      )
+      setUserList(dat);
+    }).catch((err) => { console.log(err); })
     setCurrUser(user);
   }, [])
 
@@ -34,8 +70,9 @@ function Chat() {
   }
 
   const waitForSocketConnection = (callback) => {
-    setTimeout(function() {
+    setTimeout(function () {
       if (WebSocketInstance.state() === 1) {
+        console.log('calling back');
         callback();
         return;
       } else {
@@ -45,236 +82,7 @@ function Chat() {
     }, 100);
   }
 
-  const data = [
-    {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-      id: '123'
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-      id: '456'
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    },
-    {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    }, {
-      avatar: 'https://facebook.github.io/react/img/logo.svg',
-      alt: 'Reactjs',
-      title: 'Facebook',
-      subtitle: 'What are you doing?',
-      date: new Date(),
-      unread: 0,
-    },
-  ]
+
   const msg = [
     {
       position: 'right',
@@ -435,11 +243,245 @@ function Chat() {
     // changeUserMessage(e.target.value)
     userMessage = e.target.value;
   };
+
+  const data = [
+    {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+      id: '1'
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+      id: '2'
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    },
+    {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    }, {
+      avatar: 'https://facebook.github.io/react/img/logo.svg',
+      alt: 'Reactjs',
+      title: 'Facebook',
+      subtitle: 'What are you doing?',
+      date: new Date(),
+      unread: 0,
+    },
+  ]
+
   const handleGroupClick = (group) => {
 
     // Define message object which has senderId and receiverId
-    let messages = {};
-    initializeChat(group.id, messages);
+    console.log(group);
+    const chatId = group.chatId;
+    let messages = { senderId: currUser.id, recieverId: group.id };
+    initializeChat(chatId, messages);
     console.log(group);
   };
   const handleSubmit = (e) => {
@@ -461,26 +503,34 @@ function Chat() {
     else
       return [];
   };
-
-
   return (
     <Container fluid style={{ height: '100vh' }} >
-      <Row style={{ height: '100vh' }}>
+      <Row style={{ height: '100vh' }} >
         <Col lg="5" style={{ height: '100vh', }}  >
-          <div style={{ height: '5vh' }}>
-            Profile Data
+          <div div style={{ height: '7vh' }} className='navBar'>
+            <Image roundedCircle src='https://picsum.photos/200' style={{ 'width': '8%' }} />
+            <Dropdown>
+              <Dropdown.Toggle variant="success" id="dropdown-basic">
+                <FontAwesomeIcon icon={faEllipsisVertical} />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item>New Group</Dropdown.Item>
+                <Dropdown.Item>Logout</Dropdown.Item>
+                <Dropdown.Item href='/profile' >Settings</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
           <ChatList
             className="chat-list"
             onClick={handleGroupClick}
-            dataSource={data}
+            dataSource={userList}
           />
         </Col>
         <Col lg="7" style={{ height: '100vh', background: 'aliceBlue' }} >
-          <div style={{ height: '5vh' }}>
+          <div style={{ height: '7vh' }}>
             Group Data
           </div>
-          <div style={{ height: '85vh' }} className='message-list' >
+          <div style={{ height: '82vh' }} className='message-list' >
             <MessageList
               className="message-list"
               lockable

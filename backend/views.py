@@ -93,6 +93,6 @@ def get_all_users(request):
 
     # get all users
     if request.method == 'GET':
-        users = User.objects.all()
+        users = User.objects.exclude(pk=request.user.id)
         serializer = UserSerializer(users, many=True)
         return Response({'ok':True, 'users': serializer.data})

@@ -1,3 +1,4 @@
+from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 import json
@@ -8,8 +9,10 @@ from backend.socket_views import get_last_10_messages, get_user, get_current_cha
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_messages(self, data):
+        print(data)
         print("`````````````````````````````")
         print(data)
+        chat_id = None
         messages = []
         if data['chatId']:
             print("inside")
@@ -30,7 +33,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def new_message(self, data):
         user = get_user(data['senderId'])
-        message = Message.objects.create(user=user, content=data['message'])
+        message = Message.objects.create(user=user, content=data['message'], timestamp=datetime.now(), chat_id=data['chatId'])
         current_chat = get_current_chat(data['chatId'])
         current_chat.chat_messages.add(message)
         current_chat.save()
@@ -49,7 +52,7 @@ class ChatConsumer(WebsocketConsumer):
     def message_to_json(self, message):
         return {
             'id': message.id,
-            'author': message.contact.user.username,
+            'author': message.user.username,
             'content': message.content,
             'timestamp': str(message.timestamp)
         }
@@ -60,7 +63,7 @@ class ChatConsumer(WebsocketConsumer):
     }
 
     def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.room_name = self.scope['url_route']['kwargs'].get('room_name', None)
         self.room_group_name = 'chat_%s' % self.room_name
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,

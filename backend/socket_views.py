@@ -24,6 +24,5 @@ def create_new_chat(data):
     reciever = get_user(data['recieverId'])
     chat.participants.add(sender)
     chat.participants.add(reciever)
-    chat.save()
-
+    
     return chat.id

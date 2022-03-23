@@ -16,14 +16,14 @@ class WebSocketService {
     this.socketRef = null;
   }
 
-  connect(userId) {
-    const webSocketPath = `${SOCKET_URL}/ws/chat/${userId}/`;
+  connect() {
+    // const webSocketPath = `${SOCKET_URL}/ws/chat/${userId}/`;
+    const webSocketPath = `${SOCKET_URL}/ws/chat/`;
     this.socketRef = new WebSocket(webSocketPath);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
     };
     this.socketRef.onmessage = e => {
-      console.log(e);
       this.socketNewMessage(e.data);
     };
     this.socketRef.onerror = e => {
@@ -31,7 +31,7 @@ class WebSocketService {
     };
     this.socketRef.onclose = () => {
       console.log("WebSocket closed let's reopen");
-      this.connect(userId);
+      this.connect();
     };
   }
 

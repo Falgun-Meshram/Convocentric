@@ -18,8 +18,11 @@ function Chat() {
 
   const location = useLocation();
   const date = new Date();
+
   const navigate = useNavigate();
   const [currUser, setCurrUser] = useState({});
+  const [chatMessagesDict, setChatMessagesDict] = useState({});
+
   const [userList, setUserList] = useState([{
     avatar: 'https://facebook.github.io/react/img/logo.svg',
     alt: 'Reactjs',
@@ -29,20 +32,26 @@ function Chat() {
     unread: 0,
     id: '1'
   }]);
-  console.log(userList);
+
   useEffect(() => {
+    initWebsocket();
     let user = {};
     if (localStorage.getItem('user')) {
       user = JSON.parse(localStorage.getItem('user'));
     }
+    setCurrUser(user);
+    getAllUsers();
+  }, [])
+
+  const getAllUsers = () => {
     const options = {
       method: "GET",
       url: "/get_all_users"
     }
-    let dat = [];
+    let data = [];
     axiosInstance.request(options).then((res) => {
       res.data.users.map((item) =>
-        user.id !== item.id ? dat.push({
+        data.push({
           title: item.username,
           id: String(item.id),
           avatar: 'https://facebook.github.io/react/img/logo.svg',
@@ -50,23 +59,71 @@ function Chat() {
           subtitle: 'What are you doing?',
           date: new Date(),
           unread: 0,
-        }) : ""
+        })
       )
-      setUserList(dat);
-    }).catch((err) => { console.log(err); })
-    setCurrUser(user);
-  }, [])
+      setUserList(data);
+    }).catch((err) => { 
+        console.log(err); 
+    })
+  }
+
+  const initWebsocket = () => {
+    if(WebSocketInstance.readyState === 1){
+      // pass
+    }else{
+      WebSocketInstance.connect();
+    }
+  }
+
 
   const initializeChat = (chatId, message) => {
-
     // message needs to have senderId and recieverId
     waitForSocketConnection(() => {
+
+      WebSocketInstance.addCallbacks(
+        (data) => setMessagesCallback(data), 
+        (data) => addMessageCallback(data),
+      )
       WebSocketInstance.fetchMessages(
         chatId,
         message
       );
+
     });
-    WebSocketInstance.connect(currUser.id, null);
+  }
+
+  const newMessageSocketInit = (chatId, msg, senderId, recieverId) => {
+    // message needs to have senderId and recieverId
+    let message = {
+      'content': msg,
+      'chatId': chatId,
+      'senderId': senderId,
+      'recieverId': recieverId
+    }
+
+    waitForSocketConnection(() => {
+
+      WebSocketInstance.addCallbacks(
+        (data) => setMessagesCallback(data), 
+        (data) => addMessageCallback(data),
+      )
+      WebSocketInstance.newChatMessage(
+        message
+      );
+    });
+  }
+
+  const setMessagesCallback = (data) => {
+    console.log(data);
+    let temp = {...chatMessagesDict};
+    temp[data.chat_id] = data.fetched_messages;
+    setChatMessagesDict(temp);
+  }
+
+  const addMessageCallback = (data) => {
+    let temp = chatMessagesDict[data.chat_id]
+    temp.push(data.message);
+    setChatMessagesDict({...chatMessagesDict, [data.chat_id]: temp})
   }
 
   const waitForSocketConnection = (callback) => {
@@ -236,12 +293,12 @@ function Chat() {
 
   },]
 
-  // const [userMessage, changeUserMessage] = useState("");
-  let userMessage = ""
+
+  const [userMessage, setUserMessage] = useState("");
   const [currentGroupId, changeGroupId] = useState("");
+  
   const handleOnChange = (e) => {
-    // changeUserMessage(e.target.value)
-    userMessage = e.target.value;
+    setUserMessage(e.target.value);
   };
 
   const data = [
@@ -481,10 +538,13 @@ function Chat() {
     console.log(group);
     const chatId = group.chatId;
     let messages = { senderId: currUser.id, recieverId: group.id };
-    initializeChat(chatId, messages);
+    initializeChat(1, messages);
     console.log(group);
   };
+
   const handleSubmit = (e) => {
+    // currChatId, message, senderId, recieverId
+    newMessageSocketInit(1, userMessage, 1, 2);
     console.log(`handlesubmit called`);
     console.log(userMessage);
   };
@@ -492,7 +552,6 @@ function Chat() {
     console.log('natural');
 
   }
-
 
   const getUserMessages = (groupId) => {
     console.log(`getUserMessages : ${groupId}`);

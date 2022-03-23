@@ -121,6 +121,7 @@ function Chat() {
   }
 
   const addMessageCallback = (data) => {
+    console.log(data)
     let temp = chatMessagesDict[data.chat_id]
     temp.push(data.message);
     setChatMessagesDict({...chatMessagesDict, [data.chat_id]: temp})
@@ -296,7 +297,7 @@ function Chat() {
 
   const [userMessage, setUserMessage] = useState("");
   const [currentGroupId, changeGroupId] = useState("");
-  
+
   const handleOnChange = (e) => {
     setUserMessage(e.target.value);
   };

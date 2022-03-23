@@ -122,8 +122,8 @@ function Chat() {
 
   const addMessageCallback = (data) => {
     console.log(data)
-    let temp = chatMessagesDict[data.chat_id]
-    temp.push(data.message);
+    let temp = chatMessagesDict.hasOwnProperty(data.chat_id)?chatMessagesDict[data.chat_id]:[];
+    temp.push(data.content);
     setChatMessagesDict({...chatMessagesDict, [data.chat_id]: temp})
   }
 

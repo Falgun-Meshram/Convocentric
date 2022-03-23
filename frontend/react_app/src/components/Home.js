@@ -38,6 +38,9 @@ export default function Home() {
             <Col xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Button variant="success" style={{ marginTop: '20px' }} size="md" onClick={() => redirectPage('/profile')}>Go to Profile</Button>
             </Col>
+            <Col xs={12} sm={12} md={12} lg={12} xl={12}>
+                <Button variant="primary" style={{ marginTop: '20px' }} size="md" onClick={() => redirectPage('/chat')}>Go to Chat</Button>
+            </Col>
         </Row>
     )
 }

@@ -52,7 +52,7 @@ function Chat() {
     axiosInstance.request(options).then((res) => {
       res.data.users.map((item) =>
         data.push({
-          title: item.username,
+          title: `${item.username === 'test2' ? `${item.username} 🟢` : `${item.username}`} `,
           id: String(item.id),
           avatar: 'https://facebook.github.io/react/img/logo.svg',
           alt: 'Reactjs',
@@ -62,15 +62,15 @@ function Chat() {
         })
       )
       setUserList(data);
-    }).catch((err) => { 
-        console.log(err); 
+    }).catch((err) => {
+      console.log(err);
     })
   }
 
   const initWebsocket = () => {
-    if(WebSocketInstance.readyState === 1){
+    if (WebSocketInstance.readyState === 1) {
       // pass
-    }else{
+    } else {
       WebSocketInstance.connect();
     }
   }
@@ -81,7 +81,7 @@ function Chat() {
     waitForSocketConnection(() => {
 
       WebSocketInstance.addCallbacks(
-        (data) => setMessagesCallback(data), 
+        (data) => setMessagesCallback(data),
         (data) => addMessageCallback(data),
       )
       WebSocketInstance.fetchMessages(
@@ -104,7 +104,7 @@ function Chat() {
     waitForSocketConnection(() => {
 
       WebSocketInstance.addCallbacks(
-        (data) => setMessagesCallback(data), 
+        (data) => setMessagesCallback(data),
         (data) => addMessageCallback(data),
       )
       WebSocketInstance.newChatMessage(
@@ -115,16 +115,16 @@ function Chat() {
 
   const setMessagesCallback = (data) => {
     console.log(data);
-    let temp = {...chatMessagesDict};
+    let temp = { ...chatMessagesDict };
     temp[data.chat_id] = data.fetched_messages;
     setChatMessagesDict(temp);
   }
 
   const addMessageCallback = (data) => {
     console.log(data)
-    let temp = chatMessagesDict.hasOwnProperty(data.chat_id)?chatMessagesDict[data.chat_id]:[];
+    let temp = chatMessagesDict.hasOwnProperty(data.chat_id) ? chatMessagesDict[data.chat_id] : [];
     temp.push(data.content);
-    setChatMessagesDict({...chatMessagesDict, [data.chat_id]: temp})
+    setChatMessagesDict({ ...chatMessagesDict, [data.chat_id]: temp })
   }
 
   const waitForSocketConnection = (callback) => {

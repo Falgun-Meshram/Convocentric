@@ -120,6 +120,7 @@ function Chat() {
   }
 
   const setMessagesCallback = (data) => {
+    console.log(data)
     let selectedUserId = data.selected_user_id;
     userList.find((item, i) => {
       if (item.id == selectedUserId) {
@@ -127,6 +128,7 @@ function Chat() {
       }
     });
     let temp = { ...chatMessagesDict };
+    console.log(temp)
     temp[data.chat_id] = data.fetched_messages;
     setChatMessagesDict(temp);
     setUserList(userList);
@@ -551,6 +553,22 @@ function Chat() {
     initializeChat(chatId, messages);
     console.log(group);
   };
+  const redirectPage = (page) => {
+    navigate(page)
+}
+  const handleLogout = () => {
+    axiosInstance.get("logout/").then((response) => {
+        if (response.data.ok) {
+            localStorage.removeItem("isAuth");
+            localStorage.removeItem("user");
+            redirectPage('/');
+        } else {
+            console.log("Error");
+        }
+    }).catch((error) => {
+        console.log(error);
+    });
+}
 
   const handleSubmit = (e) => {
     // currChatId, message, senderId, recieverId
@@ -584,7 +602,7 @@ function Chat() {
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item>New Group</Dropdown.Item>
-                <Dropdown.Item>Logout</Dropdown.Item>
+                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                 <Dropdown.Item href='/profile' >Settings</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

@@ -23,6 +23,11 @@ function Chat() {
   const [currUser, setCurrUser] = useState({});
   const [chatMessagesDict, setChatMessagesDict] = useState({});
 
+  const [userMessage, setUserMessage] = useState("");
+  const [currentGroupId, setGroupid] = useState({
+    id: 0,
+  });
+
   const [userList, setUserList] = useState([{
     avatar: 'https://facebook.github.io/react/img/logo.svg',
     alt: 'Reactjs',
@@ -50,7 +55,7 @@ function Chat() {
     }
     let data = [];
     axiosInstance.request(options).then((res) => {
-      res.data.users.map((item) =>
+      res.data.users.map((item) => {
         data.push({
           title: `${item.username === 'test2' ? `${item.username} 🟢` : `${item.username}`} `,
           id: String(item.id),
@@ -60,6 +65,7 @@ function Chat() {
           date: new Date(),
           unread: 0,
         })
+      }
       )
       setUserList(data);
     }).catch((err) => {
@@ -114,10 +120,16 @@ function Chat() {
   }
 
   const setMessagesCallback = (data) => {
-    console.log(data);
+    let selectedUserId = data.selected_user_id;
+    userList.find((item, i) => {
+      if (item.id == selectedUserId) {
+        item.chatId = data.chat_id;
+      }
+    });
     let temp = { ...chatMessagesDict };
     temp[data.chat_id] = data.fetched_messages;
     setChatMessagesDict(temp);
+    setUserList(userList);
   }
 
   const addMessageCallback = (data) => {
@@ -295,8 +307,6 @@ function Chat() {
   },]
 
 
-  const [userMessage, setUserMessage] = useState("");
-  const [currentGroupId, changeGroupId] = useState("");
 
   const handleOnChange = (e) => {
     setUserMessage(e.target.value);
@@ -534,12 +544,11 @@ function Chat() {
   ]
 
   const handleGroupClick = (group) => {
-
+    setGroupid({ id: group.id })
     // Define message object which has senderId and receiverId
-    console.log(group);
     const chatId = group.chatId;
     let messages = { senderId: currUser.id, recieverId: group.id };
-    initializeChat(1, messages);
+    initializeChat(chatId, messages);
     console.log(group);
   };
 
@@ -590,7 +599,7 @@ function Chat() {
           <div style={{ height: '7vh' }}>
             Group Data
           </div>
-          <div style={{ height: '82vh' }} className='message-list' >
+          <div style={{ height: '82vh' }} className='message-list'>
             <MessageList
               className="message-list"
               lockable

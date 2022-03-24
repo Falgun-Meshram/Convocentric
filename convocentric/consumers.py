@@ -12,7 +12,7 @@ class ChatConsumer(WebsocketConsumer):
         print(data)
         print("`````````````````````````````")
         print(data)
-        chat_id = None
+        chat_id = data['chatId']
         messages = []
         if data['chatId']:
             print("inside")
@@ -23,7 +23,7 @@ class ChatConsumer(WebsocketConsumer):
 
         fetched_messages = self.messages_to_json(messages) if messages else []
         message_dict = {
-            'fetched_messages': fetched_messages, 'chat_id': chat_id}
+            'fetched_messages': fetched_messages, 'chat_id': chat_id, 'selected_user_id': data['recieverId']}
 
         content = {
             'command': 'messages',

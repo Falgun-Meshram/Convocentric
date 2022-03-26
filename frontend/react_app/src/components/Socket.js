@@ -64,6 +64,7 @@ class WebSocketService {
   }
 
   newChatMessage(message) {
+    console.log('new chat messages');
     this.sendMessage({
       command: "new_message",
       message: message.content,

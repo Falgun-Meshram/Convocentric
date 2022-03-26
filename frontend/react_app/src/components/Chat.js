@@ -18,14 +18,14 @@ function Chat() {
 
   const location = useLocation();
   const date = new Date();
-
+  const test = "hey"
   const navigate = useNavigate();
   const [currUser, setCurrUser] = useState({});
   const [chatMessagesDict, setChatMessagesDict] = useState({});
 
   const [userMessage, setUserMessage] = useState("");
   const [currentGroupId, setGroupid] = useState({
-    id: 0,
+    id: 2,
   });
 
   const [userList, setUserList] = useState([{
@@ -37,6 +37,8 @@ function Chat() {
     unread: 0,
     id: '1'
   }]);
+  const getChatMessageDict = () => { return chatMessagesDict }
+  const getUsers = () => { return userList }
 
   useEffect(() => {
     initWebsocket();
@@ -47,7 +49,15 @@ function Chat() {
     setCurrUser(user);
     getAllUsers();
   }, [])
+  useEffect(() => {
+    console.log('updated chatmessages');
+    console.log(chatMessagesDict);
+    WebSocketInstance.addCallbacks(
+      (data) => setMessagesCallback(data, getChatMessageDict),
+      (data) => addMessageCallback(data, getChatMessageDict, getUsers),
+    )
 
+  }, [chatMessagesDict, userList])
   const getAllUsers = () => {
     const options = {
       method: "GET",
@@ -64,6 +74,7 @@ function Chat() {
           subtitle: 'What are you doing?',
           date: new Date(),
           unread: 0,
+          chatId: 18
         })
       }
       )
@@ -73,10 +84,17 @@ function Chat() {
     })
   }
 
+
   const initWebsocket = () => {
     if (WebSocketInstance.readyState === 1) {
       // pass
+      console.log('pass');
     } else {
+      console.log('connecting');
+      WebSocketInstance.addCallbacks(
+        (data) => setMessagesCallback(data, getChatMessageDict),
+        (data) => addMessageCallback(data, getChatMessageDict, getUsers),
+      )
       WebSocketInstance.connect();
     }
   }
@@ -84,11 +102,12 @@ function Chat() {
 
   const initializeChat = (chatId, message) => {
     // message needs to have senderId and recieverId
+    let date = new Date()
     waitForSocketConnection(() => {
 
       WebSocketInstance.addCallbacks(
-        (data) => setMessagesCallback(data),
-        (data) => addMessageCallback(data),
+        (data) => setMessagesCallback(data, getChatMessageDict),
+        (data) => addMessageCallback(data, getChatMessageDict, getUsers),
       )
       WebSocketInstance.fetchMessages(
         chatId,
@@ -100,6 +119,7 @@ function Chat() {
 
   const newMessageSocketInit = (chatId, msg, senderId, recieverId) => {
     // message needs to have senderId and recieverId
+    let date = new Date()
     let message = {
       'content': msg,
       'chatId': chatId,
@@ -110,8 +130,8 @@ function Chat() {
     waitForSocketConnection(() => {
 
       WebSocketInstance.addCallbacks(
-        (data) => setMessagesCallback(data),
-        (data) => addMessageCallback(data),
+        (data) => setMessagesCallback(data, getChatMessageDict),
+        (data) => addMessageCallback(data, getChatMessageDict, getUsers),
       )
       WebSocketInstance.newChatMessage(
         message
@@ -119,7 +139,7 @@ function Chat() {
     });
   }
 
-  const setMessagesCallback = (data) => {
+  const setMessagesCallback = (data, chatMessages) => {
     console.log(data)
     let selectedUserId = data.selected_user_id;
     userList.find((item, i) => {
@@ -128,17 +148,35 @@ function Chat() {
       }
     });
     let temp = { ...chatMessagesDict };
-    console.log(temp)
+    let temp2 = chatMessages()
+    console.log(temp2)
+    console.log(temp);
+    // console.log(new Date());
     temp[data.chat_id] = data.fetched_messages;
+    console.log(temp);
+    // TODO set time here and use useeffect to see when it updates
     setChatMessagesDict(temp);
-    setUserList(userList);
+    // setUserList(userList);
   }
 
-  const addMessageCallback = (data) => {
+  const addMessageCallback = (data, chatMessages, getUsers) => {
     console.log(data)
-    let temp = chatMessagesDict.hasOwnProperty(data.chat_id) ? chatMessagesDict[data.chat_id] : [];
-    temp.push(data.content);
-    setChatMessagesDict({ ...chatMessagesDict, [data.chat_id]: temp })
+    console.log(getUsers());
+    userList.map((item) => { if (item.chatId == data.chat_id) item.unread += 1 })
+    // TODO Check if chat id does not exits
+    let messageList = chatMessages();
+    let message = { ...chatMessagesDict }
+    console.log(date);
+    console.log(messageList);
+    console.log(message);
+    let temp = messageList[data.chat_id] ? messageList[data.chat_id] : [];;
+    // console.log(temp);
+    temp.push(data);
+    messageList[data.chat_id] = temp
+    // let o = { ...chatMessagesDict, [data.chat_id]: temp }
+    console.log(messageList);
+    //! Why spread operator immediately updates the state variable
+    setChatMessagesDict({ ...messageList, [data.chat_id]: temp })
   }
 
   const waitForSocketConnection = (callback) => {
@@ -555,24 +593,29 @@ function Chat() {
   };
   const redirectPage = (page) => {
     navigate(page)
-}
+  }
   const handleLogout = () => {
     axiosInstance.get("logout/").then((response) => {
-        if (response.data.ok) {
-            localStorage.removeItem("isAuth");
-            localStorage.removeItem("user");
-            redirectPage('/');
-        } else {
-            console.log("Error");
-        }
+      if (response.data.ok) {
+        localStorage.removeItem("isAuth");
+        localStorage.removeItem("user");
+        redirectPage('/');
+      } else {
+        console.log("Error");
+      }
     }).catch((error) => {
-        console.log(error);
+      console.log(error);
     });
-}
+  }
 
   const handleSubmit = (e) => {
     // currChatId, message, senderId, recieverId
-    newMessageSocketInit(1, userMessage, 1, 2);
+    console.log(currentGroupId);
+    let chatId = 0
+    userList.map((item) => { if (item.id == currentGroupId.id) { chatId = item.chatId } })
+    console.log(chatId);
+    console.log(currUser.id);
+    newMessageSocketInit(chatId, userMessage, currUser.id, currentGroupId.id);
     console.log(`handlesubmit called`);
     console.log(userMessage);
   };
@@ -582,7 +625,7 @@ function Chat() {
   }
 
   const getUserMessages = (groupId) => {
-    console.log(`getUserMessages : ${groupId}`);
+    // console.log(`getUserMessages : ${groupId}`);
     if (groupId === "123")
       return msg;
     if (groupId === "456")

@@ -1,18 +1,16 @@
 
 // import logo from '../logo.svg';
-
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
-import { Col, Container, Row, Dropdown, InputGroup, DropdownButton, FormControl, Image } from 'react-bootstrap';
+import { Col, Container, Row, Dropdown, InputGroup, DropdownButton, FormControl, Image, Button as ReactButton } from 'react-bootstrap';
 import { ChatList, Input, Button, MessageList, } from 'react-chat-elements';
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import WebSocketInstance from "./Socket";
 import axiosInstance from './axiosInstance';
 import '../css/App.css';
+import '../css/Chat.css';
 import 'react-chat-elements/dist/main.css';
-import { rest } from 'msw';
 
 function Chat() {
 
@@ -24,19 +22,12 @@ function Chat() {
   const [chatMessagesDict, setChatMessagesDict] = useState({});
 
   const [userMessage, setUserMessage] = useState("");
-  const [currentGroupId, setGroupid] = useState({
-    id: 2,
+  const [deletedMsg, setDeletedMsg] = useState("");
+  const [currentChatId, setChatId] = useState({
+    id: "",
   });
 
-  const [userList, setUserList] = useState([{
-    avatar: 'https://facebook.github.io/react/img/logo.svg',
-    alt: 'Reactjs',
-    title: 'Facebook',
-    subtitle: 'What are you doing?',
-    date: new Date(),
-    unread: 0,
-    id: '1'
-  }]);
+  const userList = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
   const getChatMessageDict = () => { return chatMessagesDict }
   const getUsers = () => { return userList }
 
@@ -49,75 +40,120 @@ function Chat() {
     setCurrUser(user);
     getAllUsers();
   }, [])
-  useEffect(() => {
-    console.log('updated chatmessages');
-    console.log(chatMessagesDict);
-    WebSocketInstance.addCallbacks(
-      (data) => setMessagesCallback(data, getChatMessageDict),
-      (data) => addMessageCallback(data, getChatMessageDict, getUsers),
-    )
 
-  }, [chatMessagesDict, userList])
   const getAllUsers = () => {
     const options = {
       method: "GET",
       url: "/get_all_users"
     }
-    let data = [];
+    let onlineUserDict = localStorage.getItem('onlineUserDict')?JSON.parse(localStorage.getItem('onlineUserDict')):{};
     axiosInstance.request(options).then((res) => {
+      let data = [];
+      let currentChatIds = [];
+      let chatUserDict = [];
       res.data.users.map((item) => {
+        if(item.chatId){
+          currentChatIds.push(item.chatId);
+          chatUserDict.push({'userId': item.id, 'chatId': item.chatId?item.chatId:0});
+        }
         data.push({
-          title: `${item.username === 'test2' ? `${item.username} 🟢` : `${item.username}`} `,
+          title:  onlineUserDict[item.id]?`${item.username} 🟢` : `${item.username}`,
           id: String(item.id),
           avatar: 'https://facebook.github.io/react/img/logo.svg',
           alt: 'Reactjs',
           subtitle: 'What are you doing?',
           date: new Date(),
           unread: 0,
-          chatId: 18
+          chatId: item['chatId']?item['chatId']:0
         })
+        
+      })
+      localStorage.setItem('users', JSON.stringify(data));
+      localStorage.setItem('chatUserDict', JSON.stringify(chatUserDict));
+      let currentPath = window.location.href.split('/');
+      let currentChatId = currentPath.length > 4?currentPath[4]:null;
+      if(currentChatIds.includes(currentChatId)){
+        redirectPage("/chat/"+data.chat_id);
+        // window.history.replaceState(null, "Chat Room", "/chat/"+data.chat_id);
+      }else{
+        redirectPage("/chat");
       }
-      )
-      setUserList(data);
     }).catch((err) => {
       console.log(err);
     })
   }
-
-
-  const initWebsocket = () => {
-    if (WebSocketInstance.readyState === 1) {
-      // pass
-      console.log('pass');
-    } else {
-      console.log('connecting');
-      WebSocketInstance.addCallbacks(
-        (data) => setMessagesCallback(data, getChatMessageDict),
+  
+  const initOnline = () => {
+    let userObj = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):[];
+    let onlineObj = {'userId': userObj.id, 'status': true};
+    let onlineUserDict = localStorage.getItem('onlineUserDict')?JSON.parse(localStorage.getItem('onlineUserDict')):{};
+    onlineUserDict[userObj.id] = true;
+    localStorage.setItem('onlineUserDict', JSON.stringify(onlineUserDict));
+    waitForSocketConnection(() => {
+      WebSocketInstance.chatCallbacks(
+        (data) => setMessagesCallback(data),
         (data) => addMessageCallback(data, getChatMessageDict, getUsers),
+        (data) => isOnlineCallback(data)
       )
-      WebSocketInstance.connect();
+      WebSocketInstance.isOnline(
+        onlineObj
+      );
+    });
+    
+  }
+
+  const initWebsocket = (chatId, message, status) => {
+    if (WebSocketInstance.readyState === 1) {
+    } else {
+      if(!status){
+        WebSocketInstance.chatCallbacks(
+          (data) => setMessagesCallback(data),
+          (data) => addMessageCallback(data, getChatMessageDict, getUsers),
+          (data) => isOnlineCallback(data)
+        )
+        initOnline();
+      }else{
+        waitForSocketConnection(() => {
+          WebSocketInstance.chatCallbacks(
+            (data) => setMessagesCallback(data),
+            (data) => addMessageCallback(data, getChatMessageDict, getUsers),
+            (data) => isOnlineCallback(data)
+          )
+          WebSocketInstance.fetchMessages(
+            chatId,
+            message
+          );
+        });
+      }
+      WebSocketInstance.connect(chatId);
     }
   }
 
-
   const initializeChat = (chatId, message) => {
-    // message needs to have senderId and recieverId
-    let date = new Date()
-    waitForSocketConnection(() => {
-
-      WebSocketInstance.addCallbacks(
-        (data) => setMessagesCallback(data, getChatMessageDict),
-        (data) => addMessageCallback(data, getChatMessageDict, getUsers),
-      )
-      WebSocketInstance.fetchMessages(
-        chatId,
-        message
-      );
-
-    });
+        // message needs to have senderId and recieverId
+    let date = new Date();
+    initWebsocket(chatId, message, true);
   }
 
+  const handleConversationClick = (chat) => {
+    let recieverId = parseInt(chat.id);
+    let currentClickedChatId = parseInt(chat.chatId);
+    let currUserObj = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):[];
+    let currChatUserDict = localStorage.getItem('chatUserDict')?JSON.parse(localStorage.getItem('chatUserDict')):[];
+    let existingChatId = 0;
+    currChatUserDict.map(item => {
+      if(item.chatId == currentClickedChatId){
+        existingChatId = item.chatId;
+      }
+    })
+    // setChatId({ id: chat.id });    
+    // Define message object which has senderId and receiverId
+    let messages = { senderId: currUserObj.id, recieverId: recieverId };
+    initializeChat(existingChatId, messages);
+  };
+
   const newMessageSocketInit = (chatId, msg, senderId, recieverId) => {
+
     // message needs to have senderId and recieverId
     let date = new Date()
     let message = {
@@ -128,10 +164,9 @@ function Chat() {
     }
 
     waitForSocketConnection(() => {
-
-      WebSocketInstance.addCallbacks(
-        (data) => setMessagesCallback(data, getChatMessageDict),
-        (data) => addMessageCallback(data, getChatMessageDict, getUsers),
+      WebSocketInstance.chatCallbacks(
+        (data) => setMessagesCallback(data),
+        (data) => addMessageCallback(data),
       )
       WebSocketInstance.newChatMessage(
         message
@@ -139,44 +174,55 @@ function Chat() {
     });
   }
 
-  const setMessagesCallback = (data, chatMessages) => {
-    console.log(data)
-    let selectedUserId = data.selected_user_id;
-    userList.find((item, i) => {
-      if (item.id == selectedUserId) {
-        item.chatId = data.chat_id;
-      }
+
+  const isOnlineCallback = (data) => {
+    let onlineUserDict = localStorage.getItem('onlineUserDict')?JSON.parse(localStorage.getItem('onlineUserDict')):{};
+    onlineUserDict[data.userId] = data.status;
+    localStorage.setItem('onlineUserDict', JSON.stringify(onlineUserDict));
+    let allUsers = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
+    allUsers.find((item, i) => {
+      item.title = `${item.id === data.userId && data.status? `${item.username} 🟢` : `${item.username}`} `;
     });
-    let temp = { ...chatMessagesDict };
-    let temp2 = chatMessages()
-    console.log(temp2)
-    console.log(temp);
-    // console.log(new Date());
-    temp[data.chat_id] = data.fetched_messages;
-    console.log(temp);
-    // TODO set time here and use useeffect to see when it updates
-    setChatMessagesDict(temp);
-    // setUserList(userList);
+    localStorage.setItem('users', JSON.stringify(allUsers));
   }
 
+  const setMessagesCallback = (data) => {
+    let allUsers = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
+    let currUserObj = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):{};
+    // console.log('CURRENT USER:', currUserObj.id, 'SENDER:',data.senderId, 'RECIEVER:',data.recieverId);
+    if(data.recieverId === currUserObj.id || data.senderId === currUserObj.id){
+      redirectPage("/chat/"+data.chat_id);
+      let senderId = data.senderId;
+      let recieverId = data.recieverId;
+      let chatUserDict = [];
+      allUsers.find((item, i) => {
+        if (item.id == senderId || item.id == recieverId) {
+          chatUserDict.push({'userId': item.id, 'chatId': data.chat_id});
+          item.chatId = data.chat_id;
+        }
+      });
+      localStorage.setItem('users', JSON.stringify(allUsers));
+      localStorage.setItem('chatUserDict', JSON.stringify(chatUserDict));
+    }else{
+      //pass
+    }
+  }
+
+
   const addMessageCallback = (data, chatMessages, getUsers) => {
-    console.log(data)
-    console.log(getUsers());
     userList.map((item) => { if (item.chatId == data.chat_id) item.unread += 1 })
     // TODO Check if chat id does not exits
-    let messageList = chatMessages();
+    // let messageList = chatMessages();
     let message = { ...chatMessagesDict }
-    console.log(date);
-    console.log(messageList);
-    console.log(message);
-    let temp = messageList[data.chat_id] ? messageList[data.chat_id] : [];;
+    // console.log(messageList);
+    // let temp = messageList[data.chat_id] ? messageList[data.chat_id] : [];;
     // console.log(temp);
-    temp.push(data);
-    messageList[data.chat_id] = temp
+    // temp.push(data);
+    // messageList[data.chat_id] = temp
     // let o = { ...chatMessagesDict, [data.chat_id]: temp }
-    console.log(messageList);
+    // console.log(messageList);
     //! Why spread operator immediately updates the state variable
-    setChatMessagesDict({ ...messageList, [data.chat_id]: temp })
+    // setChatMessagesDict({ ...messageList, [data.chat_id]: temp })
   }
 
   const waitForSocketConnection = (callback) => {
@@ -190,6 +236,22 @@ function Chat() {
         waitForSocketConnection(callback);
       }
     }, 100);
+  }
+
+  const deleteAll = () => {
+    const options = {
+      method: "DELETE",
+      url: "/delete_all_chats"
+    }
+    let data = [];
+    axiosInstance.request(options).then((res) => {
+      setDeletedMsg('DELETED ALL CHATS !');
+      setTimeout(() => {
+        setDeletedMsg('');
+      }, 3000)
+    }).catch((err) => {
+      console.log(err);
+    })
   }
 
 
@@ -583,14 +645,7 @@ function Chat() {
     },
   ]
 
-  const handleGroupClick = (group) => {
-    setGroupid({ id: group.id })
-    // Define message object which has senderId and receiverId
-    const chatId = group.chatId;
-    let messages = { senderId: currUser.id, recieverId: group.id };
-    initializeChat(chatId, messages);
-    console.log(group);
-  };
+  
   const redirectPage = (page) => {
     navigate(page)
   }
@@ -610,14 +665,10 @@ function Chat() {
 
   const handleSubmit = (e) => {
     // currChatId, message, senderId, recieverId
-    console.log(currentGroupId);
     let chatId = 0
-    userList.map((item) => { if (item.id == currentGroupId.id) { chatId = item.chatId } })
-    console.log(chatId);
-    console.log(currUser.id);
-    newMessageSocketInit(chatId, userMessage, currUser.id, currentGroupId.id);
+    userList.map((item) => { if (item.id == currentChatId.id) { chatId = item.chatId } })
+    newMessageSocketInit(chatId, userMessage, currUser.id, currentChatId.id);
     console.log(`handlesubmit called`);
-    console.log(userMessage);
   };
   const handleReply = () => {
     console.log('natural');
@@ -637,7 +688,7 @@ function Chat() {
     <Container fluid style={{ height: '100vh' }} >
       <Row style={{ height: '100vh' }} >
         <Col lg="5" style={{ height: '100vh', }}  >
-          <div div style={{ height: '7vh' }} className='navBar'>
+          <div style={{ height: '7vh' }} className='navBar'>
             <Image roundedCircle src='https://picsum.photos/200' style={{ 'width': '8%' }} />
             <Dropdown>
               <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -652,31 +703,23 @@ function Chat() {
           </div>
           <ChatList
             className="chat-list"
-            onClick={handleGroupClick}
+            onClick={handleConversationClick}
             dataSource={userList}
           />
+          {/* <div className="online_status"></div> */}
         </Col>
         <Col lg="7" style={{ height: '100vh', background: 'aliceBlue' }} >
           <div style={{ height: '7vh' }}>
-            Group Data
+            {JSON.parse(localStorage.getItem('user')).username} <ReactButton style={{ margin: '10px' }} size="sm" variant="danger" onClick={() => deleteAll()}>DELETE ALL</ReactButton> {deletedMsg}
           </div>
           <div style={{ height: '82vh' }} className='message-list'>
             <MessageList
               className="message-list"
               lockable
               toBottomHeight="100%"
-              dataSource={getUserMessages(currentGroupId)}
+              dataSource={getUserMessages(currentChatId)}
               onReplyClick={handleReply}
             />
-            <Dropdown
-              buttonProps={{
-                text: 'Dropdown',
-              }}
-              items={[
-                {
-                  text: 'dolor'
-                },
-              ]} />
           </div>
 
           <div className='input'>

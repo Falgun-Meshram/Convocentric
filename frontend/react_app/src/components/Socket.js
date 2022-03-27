@@ -16,9 +16,9 @@ class WebSocketService {
     this.socketRef = null;
   }
 
-  connect() {
+  connect(chatId) {
     // const webSocketPath = `${SOCKET_URL}/ws/chat/${userId}/`;
-    const webSocketPath = `${SOCKET_URL}/ws/chat/`;
+    const webSocketPath = chatId?`${SOCKET_URL}/ws/chat/${chatId}/`:`${SOCKET_URL}/ws/chat/`;
     this.socketRef = new WebSocket(webSocketPath);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
@@ -51,6 +51,9 @@ class WebSocketService {
     if (command === "new_message") {
       this.callbacks[command](parsedData.message);
     }
+    if (command === "is_online") {
+      this.callbacks[command](parsedData.message);
+    }
   }
 
   fetchMessages(chatId, message) {
@@ -74,9 +77,19 @@ class WebSocketService {
     });
   }
 
-  addCallbacks(messagesCallback, newMessageCallback) {
+  isOnline(data){
+    console.log('online user');
+    this.sendMessage({
+      command: "is_online",
+      status: data.status,
+      userId: data.userId
+    });
+  }
+
+  chatCallbacks(messagesCallback, newMessageCallback, isOnlineCallback) {
     this.callbacks["messages"] = messagesCallback;
     this.callbacks["new_message"] = newMessageCallback;
+    this.callbacks["is_online"] = isOnlineCallback;
   }
 
   sendMessage(data) {

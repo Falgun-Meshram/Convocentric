@@ -27,6 +27,7 @@ export default function Signin() {
     const [wrongUsername, setWrongUsername] = useState(false);
     const [wrongPassword, setWrongPassword] = useState(false);
     const [networkError, setNetworkError] = useState(false);
+    
     const redirectPage = (page) => {
         navigate(page)
     }

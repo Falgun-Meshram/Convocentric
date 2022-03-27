@@ -19,16 +19,18 @@ function Chat() {
   const test = "hey"
   const navigate = useNavigate();
   const [currUser, setCurrUser] = useState({});
-  const [chatMessagesDict, setChatMessagesDict] = useState({});
+  // const [chatMessagesDict, setChatMessagesDict] = useState({});
 
   const [userMessage, setUserMessage] = useState("");
   const [deletedMsg, setDeletedMsg] = useState("");
   const [currentChatId, setChatId] = useState({
     id: "",
   });
+  const [dummy, setDummy] = useState("");
 
-  const userList = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
-  const getChatMessageDict = () => { return chatMessagesDict }
+  const userList = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
+  // console.log(userList);;
+  const getChatMessageDict = () => { return '' }
   const getUsers = () => { return userList }
 
   useEffect(() => {
@@ -40,53 +42,58 @@ function Chat() {
     setCurrUser(user);
     getAllUsers();
   }, [])
-
+  useEffect(() => {
+    console.log('dummy');
+  }, [dummy])
   const getAllUsers = () => {
     const options = {
       method: "GET",
       url: "/get_all_users"
     }
-    let onlineUserDict = localStorage.getItem('onlineUserDict')?JSON.parse(localStorage.getItem('onlineUserDict')):{};
+    let onlineUserDict = localStorage.getItem('onlineUserDict') ? JSON.parse(localStorage.getItem('onlineUserDict')) : {};
     axiosInstance.request(options).then((res) => {
       let data = [];
       let currentChatIds = [];
       let chatUserDict = [];
+      // console.log(res.data.users);
       res.data.users.map((item) => {
-        if(item.chatId){
+        if (item.chatId) {
           currentChatIds.push(item.chatId);
-          chatUserDict.push({'userId': item.id, 'chatId': item.chatId?item.chatId:0});
+          chatUserDict.push({ 'userId': item.id, 'chatId': item.chatId ? item.chatId : 0 });
         }
         data.push({
-          title:  onlineUserDict[item.id]?`${item.username} 🟢` : `${item.username}`,
+          title: onlineUserDict[item.id] ? `${item.username} 🟢` : `${item.username}`,
           id: String(item.id),
           avatar: 'https://facebook.github.io/react/img/logo.svg',
           alt: 'Reactjs',
           subtitle: 'What are you doing?',
           date: new Date(),
           unread: 0,
-          chatId: item['chatId']?item['chatId']:0
+          chatId: item['chatId'] ? item['chatId'] : 0
         })
-        
+
       })
+      console.log(data);
       localStorage.setItem('users', JSON.stringify(data));
       localStorage.setItem('chatUserDict', JSON.stringify(chatUserDict));
       let currentPath = window.location.href.split('/');
-      let currentChatId = currentPath.length > 4?currentPath[4]:null;
-      if(currentChatIds.includes(currentChatId)){
-        redirectPage("/chat/"+data.chat_id);
+      let currentChatId = currentPath.length > 4 ? currentPath[4] : null;
+      if (currentChatIds.includes(currentChatId)) {
+        redirectPage("/chat/" + data.chat_id);
         // window.history.replaceState(null, "Chat Room", "/chat/"+data.chat_id);
-      }else{
+      } else {
         redirectPage("/chat");
       }
     }).catch((err) => {
       console.log(err);
     })
   }
-  
+
   const initOnline = () => {
-    let userObj = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):[];
-    let onlineObj = {'userId': userObj.id, 'status': true};
-    let onlineUserDict = localStorage.getItem('onlineUserDict')?JSON.parse(localStorage.getItem('onlineUserDict')):{};
+    console.log('called');
+    let userObj = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : [];
+    let onlineObj = { 'userId': userObj.id, 'status': true };
+    let onlineUserDict = localStorage.getItem('onlineUserDict') ? JSON.parse(localStorage.getItem('onlineUserDict')) : {};
     onlineUserDict[userObj.id] = true;
     localStorage.setItem('onlineUserDict', JSON.stringify(onlineUserDict));
     waitForSocketConnection(() => {
@@ -99,20 +106,20 @@ function Chat() {
         onlineObj
       );
     });
-    
+
   }
 
   const initWebsocket = (chatId, message, status) => {
     if (WebSocketInstance.readyState === 1) {
     } else {
-      if(!status){
+      if (!status) {
         WebSocketInstance.chatCallbacks(
           (data) => setMessagesCallback(data),
           (data) => addMessageCallback(data, getChatMessageDict, getUsers),
           (data) => isOnlineCallback(data)
         )
         initOnline();
-      }else{
+      } else {
         waitForSocketConnection(() => {
           WebSocketInstance.chatCallbacks(
             (data) => setMessagesCallback(data),
@@ -130,7 +137,7 @@ function Chat() {
   }
 
   const initializeChat = (chatId, message) => {
-        // message needs to have senderId and recieverId
+    // message needs to have senderId and recieverId
     let date = new Date();
     initWebsocket(chatId, message, true);
   }
@@ -138,11 +145,12 @@ function Chat() {
   const handleConversationClick = (chat) => {
     let recieverId = parseInt(chat.id);
     let currentClickedChatId = parseInt(chat.chatId);
-    let currUserObj = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):[];
-    let currChatUserDict = localStorage.getItem('chatUserDict')?JSON.parse(localStorage.getItem('chatUserDict')):[];
+    let currUserObj = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : [];
+    let currChatUserDict = localStorage.getItem('chatUserDict') ? JSON.parse(localStorage.getItem('chatUserDict')) : [];
     let existingChatId = 0;
+    localStorage.setItem("reciever", recieverId.toString())
     currChatUserDict.map(item => {
-      if(item.chatId == currentClickedChatId){
+      if (item.chatId == currentClickedChatId) {
         existingChatId = item.chatId;
       }
     })
@@ -176,44 +184,56 @@ function Chat() {
 
 
   const isOnlineCallback = (data) => {
-    let onlineUserDict = localStorage.getItem('onlineUserDict')?JSON.parse(localStorage.getItem('onlineUserDict')):{};
+    let onlineUserDict = localStorage.getItem('onlineUserDict') ? JSON.parse(localStorage.getItem('onlineUserDict')) : {};
     onlineUserDict[data.userId] = data.status;
     localStorage.setItem('onlineUserDict', JSON.stringify(onlineUserDict));
-    let allUsers = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
+    let allUsers = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
+    console.log(data);
+    // console.log(allUsers);
     allUsers.find((item, i) => {
-      item.title = `${item.id === data.userId && data.status? `${item.username} 🟢` : `${item.username}`} `;
+      item.title = (item.id == data.userId && data.status && item.title.search("🟢") === -1) ? `${item.title} 🟢` : `${item.title}`;
     });
+    // console.log(allUsers);
     localStorage.setItem('users', JSON.stringify(allUsers));
+    console.log('online users updated');
+    setDummy(new Date())
   }
 
   const setMessagesCallback = (data) => {
-    let allUsers = localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[];
-    let currUserObj = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):{};
+    let allUsers = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
+    let chatMessagesDict = localStorage.getItem('chatMessagesDict') ? localStorage.getItem('chatMessagesDict') : [];
+    console.log(data);
+    let currUserObj = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {};
     // console.log('CURRENT USER:', currUserObj.id, 'SENDER:',data.senderId, 'RECIEVER:',data.recieverId);
-    if(data.recieverId === currUserObj.id || data.senderId === currUserObj.id){
-      redirectPage("/chat/"+data.chat_id);
+    chatMessagesDict[data.chat_id.toString()] = data.fetched_messages;
+    console.log(JSON.stringify(chatMessagesDict));
+    localStorage.setItem('chatMessagesDict', JSON.stringify(chatMessagesDict));
+    if (data.recieverId === currUserObj.id || data.senderId === currUserObj.id) {
+      redirectPage("/chat/" + data.chat_id);
       let senderId = data.senderId;
       let recieverId = data.recieverId;
       let chatUserDict = [];
       allUsers.find((item, i) => {
         if (item.id == senderId || item.id == recieverId) {
-          chatUserDict.push({'userId': item.id, 'chatId': data.chat_id});
+          chatUserDict.push({ 'userId': item.id, 'chatId': data.chat_id });
           item.chatId = data.chat_id;
         }
       });
-      localStorage.setItem('users', JSON.stringify(allUsers));
+      // localStorage.setItem('users', JSON.stringify(allUsers));
       localStorage.setItem('chatUserDict', JSON.stringify(chatUserDict));
-    }else{
+      setDummy(new Date())
+    } else {
       //pass
     }
   }
 
 
   const addMessageCallback = (data, chatMessages, getUsers) => {
-    userList.map((item) => { if (item.chatId == data.chat_id) item.unread += 1 })
+    // userList.map((item) => { if (item.chatId == data.chat_id) item.unread += 1 })
     // TODO Check if chat id does not exits
     // let messageList = chatMessages();
-    let message = { ...chatMessagesDict }
+    console.log("here");
+    // let message = { ...chatMessagesDict }
     // console.log(messageList);
     // let temp = messageList[data.chat_id] ? messageList[data.chat_id] : [];;
     // console.log(temp);
@@ -645,7 +665,7 @@ function Chat() {
     },
   ]
 
-  
+
   const redirectPage = (page) => {
     navigate(page)
   }
@@ -654,6 +674,7 @@ function Chat() {
       if (response.data.ok) {
         localStorage.removeItem("isAuth");
         localStorage.removeItem("user");
+        localStorage.clear()
         redirectPage('/');
       } else {
         console.log("Error");
@@ -665,8 +686,15 @@ function Chat() {
 
   const handleSubmit = (e) => {
     // currChatId, message, senderId, recieverId
-    let chatId = 0
-    userList.map((item) => { if (item.id == currentChatId.id) { chatId = item.chatId } })
+    const recieverId = parseInt(localStorage.getItem('reciever'))
+    // const chatUserDict = JSON.parse(localStorage.getItem('chatUserDict'));
+    const chatId = parseInt(window.location.href.split("/")[4])
+    const userId = JSON.parse(localStorage.getItem('user')).id;
+    console.log(chatId);
+    console.log(userMessage);
+    console.log(userId);
+    console.log(recieverId);
+    // userList.map((item) => { if (item.id == currentChatId.id) { chatId = item.chatId } })
     newMessageSocketInit(chatId, userMessage, currUser.id, currentChatId.id);
     console.log(`handlesubmit called`);
   };

@@ -27,6 +27,7 @@ export default function Signin() {
     const [wrongUsername, setWrongUsername] = useState(false);
     const [wrongPassword, setWrongPassword] = useState(false);
     const [networkError, setNetworkError] = useState(false);
+    
     const redirectPage = (page) => {
         navigate(page)
     }
@@ -51,7 +52,7 @@ export default function Signin() {
                 localStorage.setItem('isAuth', true);
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("user", JSON.stringify(user));
-                redirectPage('/home');
+                redirectPage('/chat');
             }else{
                 setWrongPassword(true);
                 console.error('Some error occured.');

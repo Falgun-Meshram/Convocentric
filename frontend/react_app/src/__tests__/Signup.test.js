@@ -5,12 +5,11 @@ import { BrowserRouter } from 'react-router-dom';
 import { rest } from 'msw'
 import { setupServer } from 'msw/node'
 
-import App from '../components/App';
 import Signin from '../components/Signin';
 import SignUp from '../components/Signup';
 
 const server = setupServer(
-    rest.post("http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup", (req, res, ctx) => {
+    rest.post("http://127.0.0.1:8000/api/signup", (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({
@@ -47,7 +46,7 @@ describe("<Signup>", () => {
     )
     it("Network Error", async () => {
         server.use(
-            rest.post('http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup', (req, res, ctx) => {
+            rest.post('http://127.0.0.1:8000/api/signup', (req, res, ctx) => {
                 return res(ctx.status(400))
             }),
         )
@@ -74,7 +73,7 @@ describe("<Signup>", () => {
     })
     it("Username exists already", async () => {
         server.use(
-            rest.post('http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup', (req, res, ctx) => {
+            rest.post('http://127.0.0.1:8000/api/signup', (req, res, ctx) => {
                 return res(
                     ctx.status(200),
                     ctx.json({
@@ -108,7 +107,7 @@ describe("<Signup>", () => {
     })
     it("Email exists already", async () => {
         server.use(
-            rest.post('http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/signup', (req, res, ctx) => {
+            rest.post('http://127.0.0.1:8000/api/signup', (req, res, ctx) => {
                 return res(
                     ctx.status(200),
                     ctx.json({
@@ -163,14 +162,15 @@ describe("<Signup>", () => {
 
     }
     )
-    it("Redirect to Login", () => {
+    it("Redirect to Login", async () => {
         const { container, debug } = render(
             <BrowserRouter>
                 <SignUp />
                 <Signin />
             </BrowserRouter>
         );
-        const e = userEvent.click(screen.getByText("Sign In"))
+        const signin = await screen.getAllByText("Sign In")[0]
+        const e = userEvent.click(signin)
         expect(screen.getByText("Create an account")).toBeInTheDocument()
 
     }

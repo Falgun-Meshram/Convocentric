@@ -5,13 +5,12 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw'
 import { BrowserRouter } from 'react-router-dom';
 
-import App from '../components/App';
-import Profile from '../components/ProfilePage';
-import Signin from '../components/Signin';
-import SignUp from '../components/Signup';
+import Profile from '../components/Profile';
+
+//TODO Fix the test case for updated UI
 
 const server = setupServer(
-    rest.post("http://25ab-2607-fea8-1c80-7f7-55ce-adce-4c03-481e.ngrok.io/api/edit_profile", (req, res, ctx) => {
+    rest.post("hhttp://127.0.0.1:8000/api/edit_profile", (req, res, ctx) => {
         return res(
             ctx.status(200),
             ctx.json({
@@ -64,12 +63,4 @@ describe("<Profile>", () => {
     }
     )
 })
-//     it("Edit details link", () =>{
-//         const { container, debug } = render(
-//             <BrowserRouter>
-//                 <Profile />
-//             </BrowserRouter>
-//         );
-//         fireEvent.click() 
 
-// });

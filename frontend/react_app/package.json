@@ -23,7 +23,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "NODE_ENV=test jest --watch",
+    "test": "NODE_ENV=test jest --coverage --watch --setupFiles dotenv/config",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -35,6 +35,10 @@
   "jest": {
     "setupFilesAfterEnv": [
       "<rootDir>/src/jest.setup.js"
+    ],
+    "setupFiles": [
+      "dotenv/config",
+      "<rootDir/src/setupTests.js"
     ],
     "testPathIgnorePatterns": [
       "<rootDir>/node_modules/"

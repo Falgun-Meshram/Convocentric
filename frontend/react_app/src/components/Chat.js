@@ -516,10 +516,17 @@ function Chat() {
   },]
 
 
-
   const handleOnChange = (e) => {
     setUserMessage(e.target.value);
   };
+
+  const handleEnterBtn = (e) => {
+    let code = e.keyCode || e.which;
+    console.log(code)
+    if(code === 13){
+      handleSubmit();
+    }
+  }
 
   const data = [
     {
@@ -773,6 +780,8 @@ function Chat() {
   }
 
   const handleSubmit = (e) => {
+    
+    setUserMessage("");
     // currChatId, message, senderId, recieverId
     const recieverId = parseInt(localStorage.getItem('reciever'))
     // const chatUserDict = JSON.parse(localStorage.getItem('chatUserDict'));
@@ -809,6 +818,8 @@ function Chat() {
     else
       return []
   };
+
+
   return (
     <Container fluid style={{ height: '100vh' }} >
       <Row style={{ height: '100vh' }} >
@@ -849,18 +860,28 @@ function Chat() {
           </div>
 
           <div className='input'>
-            <Input
-              placeholder="Type here..."
-              multiline={true}
-              onChange={handleOnChange}
-              rightButtons={
+            <Row style={{ margin: '0px', padding: '0px' }}>
+              <Col xs={9} sm={9} md={9} lg={10} xl={10}>
+                <input
+                  className="form-control"
+                  style={{ zIndex: '10' }}
+                  placeholder="Type here..."
+                  name="user_message"
+                  value={userMessage}
+                  onChange={handleOnChange}
+                  onKeyPress={handleEnterBtn}
+                />
+              </Col>
+              <Col xs={3} sm={3} md={3} lg={2} xl={2}>
                 <Button
                   onClick={handleSubmit}
                   color='white'
                   backgroundColor='black'
                   text='Send' />
-              }
-            />
+              </Col>
+            </Row>
+            
+            
           </div>
         </Col>
       </Row>

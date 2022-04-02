@@ -9,6 +9,6 @@ urlpatterns = [
     path('logout/', logout_method, name="logout"),
     path('manage_user/<int:pk>/', manage_user, name="manage_user"),
     path('signup/', signup, name="signup"),
-    path('get_all_users/', get_all_users, name="get_all_users")
-
+    path('get_all_users/', get_all_users, name="get_all_users"),
+    path('delete_all_chats/', delete_all_chats, name="delete_all_chats"),
 ]

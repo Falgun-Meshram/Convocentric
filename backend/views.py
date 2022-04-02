@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import User
-from .serializers import UserSerializer
+from .models import User, Chat
+from .serializers import UserSerializer, ChatSerializer
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -92,7 +92,31 @@ def manage_user(request, pk):
 def get_all_users(request):
 
     # get all users
+    all_users = []
     if request.method == 'GET':
-        users = User.objects.exclude(pk=request.user.id)
-        serializer = UserSerializer(users, many=True)
-        return Response({'ok':True, 'users': serializer.data})
+        current_user_id = request.user.id
+        users = User.objects.exclude(pk=current_user_id)
+        for user_obj in users:
+            user_chats = user_obj.chats.all()
+            user_data = UserSerializer(user_obj, many=False).data
+            for chat_obj in user_chats:
+                chat_serializer = ChatSerializer(chat_obj, many=False).data
+                participants = chat_serializer['participants']
+                if current_user_id in participants:
+                    user_data['chatId'] = chat_serializer['id']
+            all_users.append(user_data)
+
+        return Response({'ok':True, 'users': all_users})
+
+
+# DELETE ALL CHATS
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_all_chats(request):
+
+    chats = Chat.objects.all()
+    for chat_obj in chats:
+        chat_obj.participants.clear()
+
+    Chat.objects.all().delete()
+    return Response({'ok':True })

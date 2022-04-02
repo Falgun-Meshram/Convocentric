@@ -9,27 +9,29 @@ from backend.socket_views import get_last_10_messages, get_user, get_current_cha
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_messages(self, data):
-        print(data)
-        print("`````````````````````````````")
-        print(data)
-        chat_id = None
+        chat_id = data['chatId']
         messages = []
+        is_created = False
+
         if data['chatId']:
-            print("inside")
             messages = get_last_10_messages(data['chatId'])
         else:
-            print("else")
             chat_id = create_new_chat(data)
+            is_created = True
 
         fetched_messages = self.messages_to_json(messages) if messages else []
         message_dict = {
-            'fetched_messages': fetched_messages, 'chat_id': chat_id}
+            'fetched_messages': fetched_messages, 'chat_id': chat_id, 'recieverId': data['recieverId'], 'senderId': data['senderId']}
 
         content = {
             'command': 'messages',
+            'isCreated': is_created,
             'messages': message_dict
         }
-        self.send_message(content)
+        if is_created:
+            self.send_chat_message(content, 'fetch_messages_method')
+        else:
+            self.send_message(content)
 
     def new_message(self, data):
         user = get_user(data['senderId'])
@@ -41,7 +43,17 @@ class ChatConsumer(WebsocketConsumer):
             'command': 'new_message',
             'message': self.message_to_json(message)
         }
-        return self.send_chat_message(content)
+        return self.send_chat_message(content, 'new_message_method')
+
+    def is_online(self, data):
+        content = {
+                'command': 'is_online',
+                'message':{
+                    'status': data['status'], 
+                    'userId': data['userId']
+                }
+            }
+        return self.send_chat_message(content, 'is_online_method')
 
     def messages_to_json(self, messages):
         result = []
@@ -61,11 +73,12 @@ class ChatConsumer(WebsocketConsumer):
 
     commands = {
         'fetch_messages': fetch_messages,
-        'new_message': new_message
+        'new_message': new_message,
+        'is_online': is_online
     }
 
     def connect(self):
-        self.room_name = self.scope['url_route']['kwargs'].get('room_name', None)
+        self.room_name = self.scope['url_route']['kwargs'].get('room_name', "global")
         self.room_group_name = 'chat_%s' % self.room_name
         async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
@@ -73,7 +86,7 @@ class ChatConsumer(WebsocketConsumer):
         )
         self.accept()
 
-    def disconnect(self):
+    def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name
@@ -83,18 +96,27 @@ class ChatConsumer(WebsocketConsumer):
         data = json.loads(text_data)
         self.commands[data['command']](self, data)
 
-    def send_chat_message(self, message):
-        async_to_sync(self.channel_layer.group_send)(
+    def send_chat_message(self, message, type):
+        layer = self.channel_layer.group_send
+        async_to_sync(layer)(
             self.room_group_name,
             {
-                'type': 'chat_message',
+                'type': type,
                 'message': message
             }
         )
 
-    def send_message(self, message):
+    def new_message_method(self, event):
+        message = event['message']
         self.send(text_data=json.dumps(message))
 
-    def chat_message(self, event):
+    def fetch_messages_method(self, event):
         message = event['message']
+        self.send(text_data=json.dumps(message))
+
+    def is_online_method(self, event):
+        message = event['message']
+        self.send(text_data=json.dumps(message))
+
+    def send_message(self, message):
         self.send(text_data=json.dumps(message))

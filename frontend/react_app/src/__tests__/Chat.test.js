@@ -7,6 +7,7 @@ import { setupServer } from 'msw/node'
 import userEvent from '@testing-library/user-event'
 
 import Chat from '../components/Chat.js';
+import Signin from '../components/Signin.js';
 
 const users = [
     {
@@ -107,13 +108,24 @@ const apiServer = setupServer(
 )
 beforeAll(() => {
     localStorage.setItem('user', user)
+    localStorage.setItem('chatMessagesDict', chatDict)
     localStorage.setItem('currentChatId', 57)
     localStorage.setItem('token', 'c1be8457974aea8f4dff23cce26f435e0b32457d')
     apiServer.listen()
 })
-afterEach(() => apiServer.resetHandlers())
+afterEach(() => {
+    apiServer.resetHandlers()
+    localStorage.setItem('user', user)
+    localStorage.setItem('chatMessagesDict', chatDict)
+    localStorage.setItem('currentChatId', 57)
+    localStorage.setItem('token', 'c1be8457974aea8f4dff23cce26f435e0b32457d')
+})
 afterAll(() => apiServer.close())
+
 const user = '{ "id": 1, "password": "pbkdf2_sha256$320000$GQuoWffBrr1vLvXLgbTCd1$9cfnIcqpnq6B+02cp5AhlwvLaaCKLenulqK9/e4JxQ8=", "is_superuser": false, "is_staff": false, "is_active": true, "date_joined": "2022-03-17T16:12:04.037632Z", "first_name": null, "last_name": null, "email": "test1@test.com", "created_on": "2022-03-17T16:10:41.719550Z", "updated_on": "2022-03-17T16:10:41.719723Z", "profile_picture": "", "last_passwords": null, "locked": null, "last_login": "2022-03-31T18:44:50.351243Z", "username": "test1", "groups": [], "user_permissions": [] }'
+
+const chatDict = '[{"57": [{"id": 209,"chat_id": 57,"author": "test1","author_id": 1,"content": "looking","timestamp": "2022-04-02 18:02:46.014919+00:00"}]}]'
+
 let sampleMessages = [
     {
         "id": 175,
@@ -209,6 +221,7 @@ it("Get all users", async () => {
     const listItem = await screen.findByText("test2");
     expect(listItem).toBeInTheDocument();
     websocketServer.close()
+    client.close()
 });
 it("Check user is online", async () => {
     const { container, debug, rerender } = render(
@@ -224,7 +237,7 @@ it("Check user is online", async () => {
         'command': 'is_online',
         'message': {
             "status": true,
-            'userId': 2
+            'userId': 4
         }
     }))
     websocketServer.send(JSON.stringify({
@@ -234,12 +247,13 @@ it("Check user is online", async () => {
             'userId': 3
         }
     }))
-    const onlineUser2 = await screen.findByText("test2 🟢");
+    const onlineUser2 = await screen.findByText("test4 🟢");
     expect(onlineUser2).toBeInTheDocument();
 
     const onlineUser3 = await screen.findByText("test3 🟢");
     expect(onlineUser3).toBeInTheDocument();
     websocketServer.close();
+    client.close()
 })
 it("Get old messages", async () => {
     const { container, debug, rerender } = render(
@@ -267,6 +281,95 @@ it("Get old messages", async () => {
     expect(textMessage).toBeInTheDocument();
 
     websocketServer.close();
+    client.close()
 })
+// TODO Clear for all log outs
+it("Send messages", async () => {
+    const { container, debug, rerender } = render(
+        <BrowserRouter>
+            <Chat />
+        </BrowserRouter>
+    );
+    const websocketServer = new WS("ws://127.0.0.1:8000/ws/chat/");
+    const client = new WebSocket("ws://127.0.0.1:8000/ws/chat/")
 
+    await websocketServer.connected;
+    // const user = await screen.findAllByText('test2')
+    // userEvent.click(user[0])
+    const input = screen.getByPlaceholderText("Type here...");
+    userEvent.type(input, "Hello, how are you?");
+    userEvent.keyboard("{Enter}")
+    websocketServer.send(JSON.stringify({
+        'command': 'new_message',
+        'message': {
+            "id": 175,
+            "chat_id": 57,
+            "author": "test2",
+            "author_id": 2,
+            "content": "Hello, how are you?",
+            "timestamp": "2022-03-30 21:17:13.389861+00:00"
+        },
+    }))
+    const text = await screen.findAllByText("Hello, how are you?")
+    expect(input.value).toBe("")
+    expect(text[0]).toBeInTheDocument()
+
+    websocketServer.close();
+    client.close()
+})
+it("Recieve messages", async () => {
+    const { container, debug, rerender } = render(
+        <BrowserRouter>
+            <Chat />
+        </BrowserRouter>
+    );
+    const websocketServer = new WS("ws://127.0.0.1:8000/ws/chat/");
+    const client = new WebSocket("ws://127.0.0.1:8000/ws/chat/")
+
+    await websocketServer.connected;
+    // const user = await screen.findAllByText('test2')
+    // userEvent.click(user[0])
+    userEvent.keyboard("{Enter}")
+    websocketServer.send(JSON.stringify({
+        'command': 'new_message',
+        'message': {
+            "id": 175,
+            "chat_id": 57,
+            "author": "test2",
+            "author_id": 2,
+            "content": "Hello, how are you?",
+            "timestamp": "2022-03-30 21:17:13.389861+00:00"
+        },
+    }))
+    const text = await screen.findAllByText("Hello, how are you?")
+    expect(text[0]).toBeInTheDocument()
+    websocketServer.close();
+    client.close()
+})
+it("Logout", async () => {
+    apiServer.use(
+        rest.post('http://127.0.0.1:8000/api/logout', (req, res, ctx) => {
+            return res({ 'ok': true })
+        }),
+    )
+    const { container, debug, rerender } = render(
+        <BrowserRouter>
+            <Chat />
+            <Signin />
+        </BrowserRouter>
+    );
+    const websocketServer = new WS("ws://127.0.0.1:8000/ws/chat/");
+    const client = new WebSocket("ws://127.0.0.1:8000/ws/chat/")
+
+    await websocketServer.connected;
+    userEvent.click(screen.getByTestId("dropdown"))
+    const log_out = screen.getByTestId("logoutDropdown");
+    userEvent.click(log_out)
+    const c = screen.getByText("Convocentric");
+    expect(c).toBeInTheDocument();
+
+    websocketServer.close();
+    client.close()
+
+})
 

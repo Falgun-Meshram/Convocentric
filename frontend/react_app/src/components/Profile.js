@@ -44,6 +44,7 @@ export default function Profile() {
         if(localStorage.getItem('user')){
             let user = JSON.parse(localStorage.getItem('user'));
             currentFormData = {...user}
+            // console.log(user)
         }
         setFormData(currentFormData);
         setOriginalFormData(currentFormData);
@@ -81,7 +82,7 @@ export default function Profile() {
         return true;
       }
 
-    const handleSubmit = (e) => {
+    const handleSubmit =async (e) => {
 
         e.preventDefault();
         if(shallowEqual(formData, originalFormData)){
@@ -91,35 +92,66 @@ export default function Profile() {
                 setEditStatusMsg("");
             }, 5000);
         }else if (e.currentTarget.checkValidity() === false) {
+            console.log('---------------------------------------------------------')
             e.stopPropagation();
             e.preventDefault();
             setValidated(true);
         }else{
+            console.log("======================================================")
             const options = {
                 method: 'PUT',
                 url: 'manage_user/'+formData.id+'/',
                 data: formData
             };
-            axiosInstance.request(options).then(function (response) {
-                setLoading(false);
-                if(response.status === 204){
-                    setFormData(formData);
-                    setEditStatusMsg('User data saved successfully.');
-                    setEditDataError(false);
-                    setTimeout(() => {
-                        setEditStatusMsg('');
-                    }, 5000);
-                    localStorage.setItem('user', JSON.stringify(formData))
-                }else{
-                    setEditDataError(true);
-                    setEditStatusMsg(response.data.error);
-                    setTimeout(() => {
-                        setEditStatusMsg('');
-                    }, 5000);
-                }
-            }).catch(function (error) {
+            try{
+                console.log("awaiting")
+            const response= await axiosInstance.request(options)
+            console.log(response)
+            setLoading(false);
+            if(response.status === 204){
+                console.log("got 204")
+                setFormData(formData);
+                setEditStatusMsg('User data saved successfully.');
+                setEditDataError(false);
+                setTimeout(() => {
+                    setEditStatusMsg('');
+                }, 5000);
+                localStorage.setItem('user', JSON.stringify(formData))
+            }else{
+                setEditDataError(true);
+                setEditStatusMsg(response.data.error);
+                setTimeout(() => {
+                    setEditStatusMsg('');
+                }, 5000);
+            }
+            }
+            catch(error)
+            
+            {
                 console.error(error);
-            });
+
+            }
+            // axiosInstance.request(options).then(function (response) {
+            //     setLoading(false);
+            //     if(response.status === 204){
+            //         console.log("got 204")
+            //         setFormData(formData);
+            //         setEditStatusMsg('User data saved successfully.');
+            //         setEditDataError(false);
+            //         setTimeout(() => {
+            //             setEditStatusMsg('');
+            //         }, 5000);
+            //         localStorage.setItem('user', JSON.stringify(formData))
+            //     }else{
+            //         setEditDataError(true);
+            //         setEditStatusMsg(response.data.error);
+            //         setTimeout(() => {
+            //             setEditStatusMsg('');
+            //         }, 5000);
+            //     }
+            // }).catch(function (error) {
+            //     console.error(error);
+            // });
         }
     }
 

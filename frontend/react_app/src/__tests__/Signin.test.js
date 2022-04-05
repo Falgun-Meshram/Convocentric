@@ -39,6 +39,8 @@ describe("<Signin>", () => {
                 <Signin />
             </BrowserRouter>
         );
+        expect(container).toMatchSnapshot();
+
     });
     it("Input Validation: No input given", () => {
         const { container, debug } = render(

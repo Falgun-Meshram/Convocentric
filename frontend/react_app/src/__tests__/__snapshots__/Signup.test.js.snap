@@ -1,0 +1,171 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Page should render 1`] = `
+<div>
+  <div
+    class="container-fluid"
+  >
+    <div
+      class="align-items-center row"
+      style="height: 100%;"
+    >
+      <div
+        class="background col"
+      />
+      <div
+        class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"
+      >
+        <div
+          class="row"
+          style="padding: 0px 20px; margin: 50px 0px 0px 0px;"
+        >
+          <div
+            class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+          >
+            <h2
+              style="text-align: center; margin-bottom: 3rem;"
+            >
+              Convocentric
+            </h2>
+            <h3
+              style="text-align: center; margin-bottom: 3rem; color: rgb(69, 102, 218);"
+            >
+              Welcome to Convocentric
+            </h3>
+          </div>
+        </div>
+        <div
+          class="row"
+        >
+          <div
+            class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+          >
+            <form
+              class="formAlign"
+              novalidate=""
+            >
+              <div
+                class="mb-3"
+              >
+                <label
+                  class="formColor form-label"
+                  for="form.userName"
+                >
+                  User Name
+                </label>
+                <input
+                  class="form-control"
+                  id="form.userName"
+                  placeholder="Enter an username"
+                  required=""
+                  type="text"
+                />
+                <div
+                  class="invalid-feedback"
+                >
+                  Please provide a valid name
+                </div>
+              </div>
+              <div
+                class="mb-3"
+              >
+                <label
+                  class="formColor form-label"
+                  for="Form.email"
+                >
+                  Email address
+                </label>
+                <input
+                  class="form-control"
+                  id="Form.email"
+                  pattern="[\\\\w\\\\.]+@([\\\\w]+\\\\.)+[\\\\w]{2,4}$"
+                  placeholder="name@example.com"
+                  required=""
+                  type="email"
+                />
+                <div
+                  class="invalid-feedback"
+                >
+                  Please provide a valid email
+                </div>
+              </div>
+              <div
+                class="mb-3"
+              >
+                <label
+                  class="formColor form-label"
+                  for="form.password"
+                >
+                  Password
+                </label>
+                <input
+                  class="form-control"
+                  id="form.password"
+                  pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[@$!%*?&])[A-Za-z\\\\d@$!%*?&]{8,}$"
+                  placeholder="Enter a password"
+                  required=""
+                  type="password"
+                />
+                <div
+                  class="invalid-feedback"
+                >
+                  Your password must be atleast 8 characters, and must contain atleast one capital letter, one small letter and one number and one special character
+                </div>
+              </div>
+              <div
+                class="mb-3"
+              >
+                <label
+                  class="formColor form-label"
+                  for="form.confirm"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  class="form-control"
+                  id="form.confirm"
+                  pattern=""
+                  placeholder="Confirm password"
+                  required=""
+                  type="password"
+                />
+                <div
+                  class="invalid-feedback"
+                >
+                  Password should match
+                </div>
+              </div>
+              <div
+                class="text-center"
+              >
+                <button
+                  class="btn btn-primary btn-block btn btn-primary btn-lg"
+                  type="submit"
+                >
+                  Sign Up
+                </button>
+              </div>
+              
+            </form>
+            <div
+              class="text-center"
+            >
+              <p
+                class="text-center"
+                style="padding-top: 1rem;"
+              >
+                Already have an account?
+              </p>
+              <a
+                href="/"
+              >
+                Sign In
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

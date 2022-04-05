@@ -222,6 +222,7 @@ it("Get all users", async () => {
     expect(listItem).toBeInTheDocument();
     websocketServer.close()
     client.close()
+    expect(container).toMatchSnapshot();
 });
 it("Check user is online", async () => {
     const { container, debug, rerender } = render(

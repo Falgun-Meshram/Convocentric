@@ -30,6 +30,7 @@ it("Page should render", () => {
             <SignUp />
         </BrowserRouter>
     );
+    expect(container).toMatchSnapshot();
 });
 it("Input Validation: No input given", async () => {
     const { container, debug } = render(

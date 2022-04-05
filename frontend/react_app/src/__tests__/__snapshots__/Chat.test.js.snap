@@ -1,0 +1,385 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Get all users 1`] = `
+<div>
+  <div
+    class="container-fluid"
+    style="height: 100vh;"
+  >
+    <div
+      class="row"
+      style="height: 100vh;"
+    >
+      <div
+        class="col-lg-5"
+        style="height: 100vh;"
+      >
+        <div
+          class="navBar"
+          style="height: 7vh;"
+        >
+          <img
+            class="rounded-circle"
+            src="https://picsum.photos/200"
+            style="width: 8%;"
+          />
+          <div
+            class="dropdown"
+          >
+            <button
+              aria-expanded="false"
+              class="dropdown-toggle btn btn-success"
+              data-testid="dropdown"
+              id="dropdown-basic"
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="svg-inline--fa fa-ellipsis-vertical "
+                data-icon="ellipsis-vertical"
+                data-prefix="fas"
+                focusable="false"
+                role="img"
+                viewBox="0 0 128 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M64 360C94.93 360 120 385.1 120 416C120 446.9 94.93 472 64 472C33.07 472 8 446.9 8 416C8 385.1 33.07 360 64 360zM64 200C94.93 200 120 225.1 120 256C120 286.9 94.93 312 64 312C33.07 312 8 286.9 8 256C8 225.1 33.07 200 64 200zM64 152C33.07 152 8 126.9 8 96C8 65.07 33.07 40 64 40C94.93 40 120 65.07 120 96C120 126.9 94.93 152 64 152z"
+                  fill="currentColor"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div
+          class="rce-container-clist chat-list"
+        >
+          <div
+            class="rce-container-citem"
+          >
+            <div
+              class="rce-citem"
+            >
+              <div
+                class="rce-citem-avatar"
+              >
+                <div
+                  class="rce-avatar-container circle large"
+                >
+                  <img
+                    alt="Reactjs"
+                    class="rce-avatar"
+                    src="https://facebook.github.io/react/img/logo.svg"
+                  />
+                </div>
+              </div>
+              <div
+                class="rce-citem-body"
+              >
+                <div
+                  class="rce-citem-body--top"
+                >
+                  <div
+                    class="rce-citem-body--top-title"
+                  >
+                    test2
+                  </div>
+                  <div
+                    class="rce-citem-body--top-time"
+                  />
+                </div>
+                <div
+                  class="rce-citem-body--bottom"
+                >
+                  <div
+                    class="rce-citem-body--bottom-title"
+                  >
+                    What are you doing?
+                  </div>
+                  <div
+                    class="rce-citem-body--bottom-tools"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-tools-item-hidden-hover"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-status"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rce-container-citem"
+          >
+            <div
+              class="rce-citem"
+            >
+              <div
+                class="rce-citem-avatar"
+              >
+                <div
+                  class="rce-avatar-container circle large"
+                >
+                  <img
+                    alt="Reactjs"
+                    class="rce-avatar"
+                    src="https://facebook.github.io/react/img/logo.svg"
+                  />
+                </div>
+              </div>
+              <div
+                class="rce-citem-body"
+              >
+                <div
+                  class="rce-citem-body--top"
+                >
+                  <div
+                    class="rce-citem-body--top-title"
+                  >
+                    test3
+                  </div>
+                  <div
+                    class="rce-citem-body--top-time"
+                  />
+                </div>
+                <div
+                  class="rce-citem-body--bottom"
+                >
+                  <div
+                    class="rce-citem-body--bottom-title"
+                  >
+                    What are you doing?
+                  </div>
+                  <div
+                    class="rce-citem-body--bottom-tools"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-tools-item-hidden-hover"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-status"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rce-container-citem"
+          >
+            <div
+              class="rce-citem"
+            >
+              <div
+                class="rce-citem-avatar"
+              >
+                <div
+                  class="rce-avatar-container circle large"
+                >
+                  <img
+                    alt="Reactjs"
+                    class="rce-avatar"
+                    src="https://facebook.github.io/react/img/logo.svg"
+                  />
+                </div>
+              </div>
+              <div
+                class="rce-citem-body"
+              >
+                <div
+                  class="rce-citem-body--top"
+                >
+                  <div
+                    class="rce-citem-body--top-title"
+                  >
+                    test4
+                  </div>
+                  <div
+                    class="rce-citem-body--top-time"
+                  />
+                </div>
+                <div
+                  class="rce-citem-body--bottom"
+                >
+                  <div
+                    class="rce-citem-body--bottom-title"
+                  >
+                    What are you doing?
+                  </div>
+                  <div
+                    class="rce-citem-body--bottom-tools"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-tools-item-hidden-hover"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-status"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rce-container-citem"
+          >
+            <div
+              class="rce-citem"
+            >
+              <div
+                class="rce-citem-avatar"
+              >
+                <div
+                  class="rce-avatar-container circle large"
+                >
+                  <img
+                    alt="Reactjs"
+                    class="rce-avatar"
+                    src="https://facebook.github.io/react/img/logo.svg"
+                  />
+                </div>
+              </div>
+              <div
+                class="rce-citem-body"
+              >
+                <div
+                  class="rce-citem-body--top"
+                >
+                  <div
+                    class="rce-citem-body--top-title"
+                  >
+                    test5
+                  </div>
+                  <div
+                    class="rce-citem-body--top-time"
+                  />
+                </div>
+                <div
+                  class="rce-citem-body--bottom"
+                >
+                  <div
+                    class="rce-citem-body--bottom-title"
+                  >
+                    What are you doing?
+                  </div>
+                  <div
+                    class="rce-citem-body--bottom-tools"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-tools-item-hidden-hover"
+                  />
+                  <div
+                    class="rce-citem-body--bottom-status"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col-lg-7"
+        style="height: 100vh; background: aliceBlue;"
+      >
+        <div
+          style="height: 7vh;"
+        >
+          test1
+           
+          <button
+            class="btn btn-danger btn-sm"
+            style="margin: 10px;"
+            type="button"
+          >
+            DELETE ALL
+          </button>
+           
+          
+        </div>
+        <div
+          class="message-list"
+          id="messageDiv"
+          style="height: 82vh;"
+        >
+          <div
+            class="rce-container-mlist message-list"
+          >
+            <div
+              class="rce-mlist"
+            >
+              <div
+                class="rce-container-mbox"
+              >
+                <div
+                  class="rce-mbox rce-mbox-right"
+                >
+                  <div
+                    class="rce-mbox-body"
+                  >
+                    <div
+                      class="rce-mbox-title rce-mbox-title--clear"
+                    >
+                      <span>
+                        test1
+                      </span>
+                    </div>
+                    <div
+                      class="rce-mbox-text right"
+                    >
+                      looking
+                    </div>
+                    <div
+                      class="rce-mbox-time non-copiable"
+                      data-text="2 days ago"
+                    />
+                  </div>
+                  <svg
+                    class="rce-mbox-right-notch"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M0 0v20L20 0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="input"
+        >
+          <div
+            class="row"
+            style="margin: 0px; padding: 0px;"
+          >
+            <div
+              class="col-xl-10 col-lg-10 col-md-9 col-sm-9 col-9"
+            >
+              <input
+                class="form-control"
+                name="user_message"
+                placeholder="Type here..."
+                style="z-index: 10;"
+                value=""
+              />
+            </div>
+            <div
+              class="col-xl-2 col-lg-2 col-md-3 col-sm-3 col-3"
+            >
+              <button
+                class="rce-button"
+                style="background-color: black; color: white; border-color: black;"
+              >
+                <span>
+                  Send
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

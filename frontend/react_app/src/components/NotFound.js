@@ -12,7 +12,7 @@ export default function NotFound() {
                     Take me back to
                 </Card.Text>
                 <div className='text-center' >
-                    <Link to="/" >Home</Link>
+                    <Link to="/chat">Home</Link>
                 </div>
             </Card.Body>
         </Card>

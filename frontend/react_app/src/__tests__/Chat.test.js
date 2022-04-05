@@ -98,7 +98,6 @@ const users = [
 
 const apiServer = setupServer(
     rest.get("http://127.0.0.1:8000/api/get_all_users", (req, res, ctx) => {
-        console.log('here???');
         return res(
             ctx.status(200),
             ctx.json({
@@ -284,7 +283,7 @@ it("Get old messages", async () => {
     websocketServer.close();
     client.close()
 })
-// TODO Clear for all log outs
+
 it("Send messages", async () => {
     const { container, debug, rerender } = render(
         <BrowserRouter>

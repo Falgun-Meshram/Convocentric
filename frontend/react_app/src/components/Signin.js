@@ -13,7 +13,6 @@ import { Link } from 'react-router-dom';
 import '../css/Signin.css';
 import '../css/Signin.css';
 import axios from 'axios'
-import { response } from 'msw';
 
 export default function Signin() {
 
@@ -39,7 +38,6 @@ export default function Signin() {
         setWrongUsername(false);
         setWrongPassword(false);
         setNetworkError(false);
-        console.log(process.env.REACT_APP_BASE_URL + 'login/');
         const options = {
             method: 'POST',
             url: process.env.REACT_APP_BASE_URL + 'login/',

@@ -14,10 +14,18 @@ export default function Home() {
     }
     
     const logout = () => {
-        axiosInstance.get("logout/").then((response) => {
+        const options = {
+            method: 'GET',
+            url: process.env.REACT_APP_BASE_URL+'logout/',
+            headers: {
+              Authorization: "Token " + localStorage.getItem("token"),
+              "Content-Type": "application/json",
+              accept: "application/json",
+            }
+          };
+          axios.request(options).then((response) => {
             if (response.data.ok) {
-                localStorage.removeItem("isAuth");
-                localStorage.removeItem("user");
+                localStorage.clear()
                 redirectPage('/');
             } else {
                 console.log("Error");

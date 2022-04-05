@@ -37,7 +37,7 @@ Add the .env.development file to the root directory for frontend inside frontend
 
 .env.development file
 
-REACT_APP_BASE_URL = 'http://127.0.0.1:8000/api/'
+REACT_APP_BASE_URL = 'http://127.0.0.1:8000/api/' <br/>
 REACT_APP_SOCKET_URL = 'ws://127.0.0.1:8000'
 
 

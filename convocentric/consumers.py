@@ -19,7 +19,7 @@ class ChatConsumer(WebsocketConsumer):
             chat_id = create_new_chat(data)
             is_created = True
 
-        fetched_messages = self.messages_to_json(messages) if messages else []
+        fetched_messages = self.messages_to_json(messages, data['senderId'], data['recieverId']) if messages else []
         message_dict = {
             'fetched_messages': fetched_messages, 'chat_id': chat_id, 'recieverId': data['recieverId'], 'senderId': data['senderId']}
 
@@ -41,7 +41,7 @@ class ChatConsumer(WebsocketConsumer):
         current_chat.save()
         content = {
             'command': 'new_message',
-            'message': self.message_to_json(message)
+            'message': self.message_to_json(message, data['senderId'], data['recieverId'])
         }
         return self.send_chat_message(content, 'new_message_method')
 
@@ -55,20 +55,22 @@ class ChatConsumer(WebsocketConsumer):
             }
         return self.send_chat_message(content, 'is_online_method')
 
-    def messages_to_json(self, messages):
+    def messages_to_json(self, messages, senderId, recieverId):
         result = []
         for message in messages:
-            result.append(self.message_to_json(message))
+            result.append(self.message_to_json(message, senderId, recieverId))
         return result
 
-    def message_to_json(self, message):
+    def message_to_json(self, message, senderId, recieverId):
         return {
             'id': message.id,
             'chat_id': message.chat.id,
             'author': message.user.username,
             'author_id': message.user.id,
             'content': message.content,
-            'timestamp': str(message.timestamp)
+            'timestamp': str(message.timestamp),
+            'recieverId': recieverId, 
+            'senderId': senderId
         }
 
     commands = {

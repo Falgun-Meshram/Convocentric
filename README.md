@@ -2,7 +2,7 @@
 
 Messaging Web application allowing real time text, media transmission. <br/>
 
-<b>Authors: Abhishek Kulkarni, Falgun Meshram, Shraddha Dhole, Shreeya Joshi</b>
+<b>Authors: </b> Abhishek Kulkarni, Falgun Meshram, Shraddha Dhole, Shreeya Joshi
 
 # Backend Setup 
 

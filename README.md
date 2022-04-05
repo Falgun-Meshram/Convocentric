@@ -1,10 +1,12 @@
 # Convocentric
 
-Messaging Web application allowing real time text, media transmission.
+Messaging Web application allowing real time text, media transmission. <br/>
+
+<b>Authors: Abhishek Kulkarni, Falgun Meshram, Shraddha Dhole, Shreeya Joshi</b>
 
 # Backend Setup 
 
-This setup works for Linux/Mac Users
+<b>This setup works for Linux/Mac Users</b>
 
 Add the .env file to the root directory for backend
 

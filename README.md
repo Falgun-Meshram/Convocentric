@@ -4,6 +4,8 @@ Messaging Web application allowing real time text, media transmission.
 
 # Backend Setup 
 
+This setup works for Linux/Mac Users
+
 Add the .env file to the root directory for backend
 
 .env file
@@ -21,14 +23,20 @@ DB_PORT=3306<br/>
 BASE_URL=http://127.0.0.1:8000<br/>
 ENV=dev<br/>
 
-1) Install the requirements from the requirements.txt file: <br/> 
+1) Create a virtual environment for python using the command: <br/>
+python3 -m venv venv <br/>
+
+2) Activate the virtual environment: <br/>
+source venv/bin/activate <br/>
+
+2) Install the requirements from the requirements.txt file in your virtual environment: <br/> 
 pip install -r requirements.txt <br/>
 
-2) Run the migrations for the MYSQL database: <br/> 
+3) Run the migrations for the MYSQL database: <br/> 
 python manage.py makemigrations <br/>
 python manage.py migrate <br/>
 
-3) Once done, run the backend Django server:  <br/> 
+4) Once done, run the backend Django server:  <br/> 
 python manage.py runserver <br/>
 
 # Frontend Setup 

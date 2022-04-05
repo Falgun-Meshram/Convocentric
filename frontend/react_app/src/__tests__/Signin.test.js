@@ -39,6 +39,8 @@ describe("<Signin>", () => {
                 <Signin />
             </BrowserRouter>
         );
+        expect(container).toMatchSnapshot();
+
     });
     it("Input Validation: No input given", () => {
         const { container, debug } = render(
@@ -69,7 +71,6 @@ describe("<Signin>", () => {
                 <Chat />
             </BrowserRouter>
         );
-        console.log(`container ${container}`);
         const userNameInput = screen.getByPlaceholderText("Username");
         const passwordInput = screen.getByPlaceholderText("Password");
 
@@ -84,7 +85,6 @@ describe("<Signin>", () => {
     it("Network Error", async () => {
         server.use(
             rest.post('http://127.0.0.1:8000/api/login/', (req, res, ctx) => {
-                console.log(req);
                 return res(ctx.status(400))
             }),
         )

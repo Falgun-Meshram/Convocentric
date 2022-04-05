@@ -36,8 +36,9 @@ describe("<Profile>", () => {
             </BrowserRouter>
         );
         const userName = await screen.findAllByText("@test1")
-        console.log(userName)
         expect(userName[0]).toBeInTheDocument();
+        expect(container).toMatchSnapshot();
+
     });
     it("Profile firstname, last name and email validation", async () => {
         const { container, debug } = render(

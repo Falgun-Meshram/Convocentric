@@ -1,4 +1,3 @@
-from pickle import TRUE
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import User, Chat
@@ -102,10 +101,15 @@ def get_all_users(request):
             user_chats = user_obj.chats.all()
             user_data = UserSerializer(user_obj, many=False).data
             for chat_obj in user_chats:
+                messages = chat_obj.chat_messages.order_by('-timestamp').all()[:1]
+                last_message = None
+                if len(messages) > 0:
+                    last_message = messages[0].content
                 chat_serializer = ChatSerializer(chat_obj, many=False).data
                 participants = chat_serializer['participants']
                 if current_user_id in participants:
                     user_data['chatId'] = chat_serializer['id']
+                    user_data['last_message'] = last_message
             all_users.append(user_data)
 
         return Response({'ok':True, 'users': all_users})

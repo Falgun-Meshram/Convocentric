@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Signin> Page should render 1`] = `
+<div>
+  <div
+    class="align-items-center row"
+    style="padding: 0px; margin: 0px;"
+  >
+    <div
+      class="background col"
+    />
+    <div
+      class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"
+    >
+      <div
+        class="row"
+        style="padding: 0px 20px; margin: 50px 0px 0px 0px;"
+      >
+        <div
+          class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+        >
+          <h2
+            style="text-align: center; margin-bottom: 3rem;"
+          >
+            Convocentric
+          </h2>
+          <h3
+            style="text-align: center; margin-bottom: 3rem; color: rgb(69, 102, 218);"
+          >
+            Welcome to Convocentric
+          </h3>
+        </div>
+      </div>
+      <div
+        class="row"
+      >
+        <div
+          class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+        >
+          <form
+            class="formAlign"
+          >
+            <div
+              class="mb-3"
+              novalidate=""
+            >
+              <label
+                class="form-label"
+                style="color: rgb(74, 107, 219);"
+              >
+                Username
+              </label>
+              <input
+                class="form-control"
+                id="username"
+                name="username"
+                placeholder="Username"
+                required=""
+                type="text"
+                value=""
+              />
+              <div
+                class="invalid-feedback"
+              >
+                Please provide a valid name
+              </div>
+            </div>
+            <div
+              class="mb-3"
+            >
+              <label
+                class="form-label"
+                style="color: rgb(74, 107, 219);"
+              >
+                Password
+                <i
+                  class="fa fa-info-circle"
+                  style="margin-left: 10px; color: green; font-size: 20px; cursor: pointer;"
+                />
+              </label>
+              <input
+                class="form-control"
+                id="password"
+                name="password"
+                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\\\\d)(?=.*[@$!%*?&])[A-Za-z\\\\d@$!%*?&]{8,}$"
+                placeholder="Password"
+                required=""
+                type="password"
+                value=""
+              />
+              
+            </div>
+            <div
+              class="row"
+              style="margin: 35px 0px 0px 0px; padding: 0px;"
+            >
+              <div
+                class="col-xl-5 col-lg-5 col-md-6 col-sm-12 col-12 offset-xl-3 offset-lg-3 offset-md-6"
+              >
+                <button
+                  class="btn btn-primary btn-block btn btn-primary btn-lg"
+                  type="submit"
+                >
+                  Sign In
+                </button>
+              </div>
+            </div>
+            
+            <div
+              class="row"
+              style="margin: 10px 0px 0px 0px; padding: 0px;"
+            >
+              <div
+                class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+              >
+                <p
+                  style="margin: 0px; color: rgb(42, 76, 191); padding: 15px 20px 5px 0px; font-size: 15px; text-align: center;"
+                >
+                  Don’t have an account yet? 
+                </p>
+                <p
+                  style="cursor: pointer; margin: 0px; color: rgb(28, 63, 181); padding: 0px 20px 0px 0px; font-size: 22px; text-align: center;"
+                >
+                  Create an account
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

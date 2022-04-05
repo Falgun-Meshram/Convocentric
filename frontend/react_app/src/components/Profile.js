@@ -11,6 +11,7 @@ import { faCamera } from "@fortawesome/free-solid-svg-icons"
 // import Dialog from "react-bootstrap-dialog";
 import axiosInstance from './axiosInstance';
 import { Spinner } from 'react-bootstrap';
+import axios from 'axios';
 
 export default function Profile() {
 
@@ -44,7 +45,6 @@ export default function Profile() {
         if (localStorage.getItem('user')) {
             let user = JSON.parse(localStorage.getItem('user'));
             currentFormData = { ...user }
-            // console.log(user)
         }
         setFormData(currentFormData);
         setOriginalFormData(currentFormData);
@@ -55,10 +55,18 @@ export default function Profile() {
     }
 
     const logout = () => {
-        axiosInstance.get("logout/").then((response) => {
+        const options = {
+            method: 'GET',
+            url: process.env.REACT_APP_BASE_URL+'logout/',
+            headers: {
+                Authorization: "Token " + localStorage.getItem("token"),
+                "Content-Type": "application/json",
+                accept: "application/json",
+            },
+          };
+          axios.request(options).then((response) => {
             if (response.data.ok) {
-                localStorage.removeItem("isAuth");
-                localStorage.removeItem("user");
+                localStorage.clear()
                 redirectPage('/');
             } else {
                 console.log("Error");
@@ -102,12 +110,9 @@ export default function Profile() {
                 data: formData
             };
             try {
-                console.log("awaiting")
                 const response = await axiosInstance.request(options)
-                console.log(response)
                 setLoading(false);
                 if (response.status === 204) {
-                    console.log("got 204")
                     setFormData(formData);
                     setEditStatusMsg('User data saved successfully.');
                     setEditDataError(false);
@@ -125,7 +130,6 @@ export default function Profile() {
             }
             catch (error) {
                 console.error(error);
-
             }
         }
     }
@@ -262,8 +266,8 @@ export default function Profile() {
                                         </Button>
                                     </Col>
                                     <Col lg={4} xl={4}>
-                                        <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/home')} >
-                                            Back to Home
+                                        <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/chat')} >
+                                            Back to Chat
                                         </Button>
                                     </Col>
                                 </Row>}

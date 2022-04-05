@@ -17,11 +17,9 @@ class WebSocketService {
   }
 
   connect(chatId) {
-    // const webSocketPath = `${SOCKET_URL}/ws/chat/${userId}/`;
     const webSocketPath = chatId?`${SOCKET_URL}/ws/chat/${chatId}/`:`${SOCKET_URL}/ws/chat/`;
     this.socketRef = new WebSocket(webSocketPath);
     this.socketRef.onopen = () => {
-      console.log("WebSocket open");
     };
     this.socketRef.onmessage = e => {
       this.socketNewMessage(e.data);
@@ -30,7 +28,6 @@ class WebSocketService {
       console.log(e.message);
     };
     this.socketRef.onclose = () => {
-      console.log("WebSocket closed let's reopen");
       this.connect();
     };
   }
@@ -57,7 +54,6 @@ class WebSocketService {
   }
 
   fetchMessages(chatId, message) {
-    console.log('fetching messages');
     this.sendMessage({
       command: "fetch_messages",
       senderId: message.senderId,
@@ -67,7 +63,6 @@ class WebSocketService {
   }
 
   newChatMessage(message) {
-    console.log('new chat messages');
     this.sendMessage({
       command: "new_message",
       message: message.content,
@@ -78,7 +73,6 @@ class WebSocketService {
   }
 
   isOnline(data){
-    console.log('online user');
     this.sendMessage({
       command: "is_online",
       status: data.status,
@@ -103,6 +97,7 @@ class WebSocketService {
   state() {
     return this.socketRef.readyState;
   }
+
 }
 
 const WebSocketInstance = WebSocketService.getInstance();

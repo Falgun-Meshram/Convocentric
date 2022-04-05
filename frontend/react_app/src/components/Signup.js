@@ -4,18 +4,6 @@ import { Container, Row, Col, Form, Button, Spinner, Modal, Alert } from 'react-
 import '../css/Signup.css';
 import axios from 'axios';
 
-//TODO Signin
-// 1. Center the button
-// 2. Add loader
-// 3. Handle wrong username/password
-// 4. Handle network error
-// 5. Save session storage
-// 6. Write Tests accordingly
-
-// TODO Profile Page
-// 1. Complete testing
-// 2. Change design to signup/signup???
-
 export default function SignUp() {
 
     const navigate = useNavigate();
@@ -41,7 +29,6 @@ export default function SignUp() {
 
         }, 1000);
         return () => {
-            // console.log(`seconds ${seconds} and signup ${signUpSuccess}`);
             if (seconds === 1 && signUpSuccess)
                 navigate("/chat");
             clearInterval(myInterval);
@@ -69,7 +56,6 @@ export default function SignUp() {
     };
     const handleSubmit = async (e) => {
         if (e.currentTarget.checkValidity() === false) {
-            console.log('in');
             e.stopPropagation();
             e.preventDefault();
             setValidated(true);
@@ -87,8 +73,6 @@ export default function SignUp() {
 
             axios.request(options).then(function (response) {
                 const { ok, error } = response.data;
-                console.log(`response is `);
-                console.log(response);
                 setLoading(false);
                 if (ok) {
                     setSeconds(5);
@@ -102,27 +86,12 @@ export default function SignUp() {
                         setExistingEmail(true)
                 }
             }).catch(function (error) {
-                console.log('error is');
-                console.log(error);
                 setNetworkError(true);
                 setTimeout(() => {
                     setNetworkError(false);
                 }, 5000);
                 setLoading(false)
             });
-
-
-            console.log(`handleSubmited called with`)
-            console.log(userName);
-            console.log(email);
-            console.log(password);
-            console.log(confirm);
-            // setLoading(false);
-            // // setExistingUsername(true);
-            // // setSeconds(5);
-            // setSignUpSuccess(true);
-            // setShow(true);
-            // setValidated(true);
         }
 
     };

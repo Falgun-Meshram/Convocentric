@@ -266,8 +266,8 @@ export default function Profile() {
                                         </Button>
                                     </Col>
                                     <Col lg={4} xl={4}>
-                                        <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/home')} >
-                                            Back to Home
+                                        <Button size="md" className="customButtonChangePassword" onClick={() => redirectPage('/chat')} >
+                                            Back to Chat
                                         </Button>
                                     </Col>
                                 </Row>}

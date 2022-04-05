@@ -4,6 +4,7 @@ import Col from 'react-bootstrap/Col';
 import { Button } from 'react-bootstrap';
 import axiosInstance from './axiosInstance';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 export default function Home() {
 

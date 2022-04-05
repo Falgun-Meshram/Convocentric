@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import { Col, Container, Row, Dropdown, Image, Button as ReactButton } from 'react-bootstrap';
-import { ChatList, MessageList, } from 'react-chat-elements';
+import { ChatList, MessageList, Button } from 'react-chat-elements';
 import { useNavigate } from 'react-router-dom';
 import WebSocketInstance from "./Socket";
 import axiosInstance from './axiosInstance';
@@ -10,6 +10,7 @@ import '../css/App.css';
 import '../css/Chat.css';
 import 'react-chat-elements/dist/main.css';
 import axios from 'axios';
+import { defaultProfilePictureImageDataUri } from '../constants';
 
 function Chat() {
 
@@ -21,6 +22,7 @@ function Chat() {
     id: "",
   });
   const [dummy, setDummy] = useState("");
+  const [currentSelectedChatUser, setCurrentSelectedChatUser] = useState("");
   const userList = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
 
   const getUsers = () => { return userList }
@@ -66,9 +68,8 @@ function Chat() {
         data.push({
           title: onlineUserDict[item.id] ? `${item.username} 🟢` : `${item.username.replaceAll("🟢", "")}`,
           id: String(item.id),
-          avatar: 'https://facebook.github.io/react/img/logo.svg',
-          alt: 'Reactjs',
-          subtitle: 'What are you doing?',
+          avatar: item.profile_picture?item.profile_picture:defaultProfilePictureImageDataUri,
+          alt: 'Profile Picture',
           date: new Date(),
           unread: 0,
           chatId: item['chatId'] ? item['chatId'] : 0
@@ -147,6 +148,7 @@ function Chat() {
     let recieverId = parseInt(chat.id);
     let currentClickedChatId = parseInt(chat.chatId);
     let currUserObj = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : [];
+    setCurrentSelectedChatUser(chat.title);
     let currChatUserDict = localStorage.getItem('chatUserDict') ? JSON.parse(localStorage.getItem('chatUserDict')) : [];
     let existingChatId = 0;
     localStorage.setItem("reciever", recieverId.toString())
@@ -254,7 +256,6 @@ function Chat() {
         callback();
         return;
       } else {
-        console.log("wait for connection...");
         waitForSocketConnection(callback);
       }
     }, 100);
@@ -343,15 +344,15 @@ function Chat() {
   return (
     <Container fluid style={{ height: '100vh' }} >
       <Row style={{ height: '100vh' }} >
-        <Col lg="5" style={{ height: '100vh', }}  >
-          <div style={{ height: '7vh' }} className='navBar'>
-            <Image roundedCircle src={currUser.profile_picture} style={{ 'width': '8%' }} />
+        <Col lg="5" style={{ height: '100vh', padding: '5px 10px 0px 10px', margin: '0px' }}>
+          <div style={{ height: '7vh', borderBottom: '1px solid rgb(232,232,232)' }} className='navBar'>
+            <Image roundedCircle src={currUser.profile_picture?currUser.profile_picture:defaultProfilePictureImageDataUri} style={{ 'width': '8%' }}/> <span style={{ color:'#2A4CBF', textTransform: 'capitalize', fontSize: '18px', marginLeft: '20px', fontWeight: 'bold' }}>{currUser && currUser.username?currUser.username:""}</span>
             <Dropdown>
               <Dropdown.Toggle variant="success" id="dropdown-basic" data-testid="dropdown">
                 <FontAwesomeIcon icon={faEllipsisVertical} />
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>New Group</Dropdown.Item>
+                {/* <Dropdown.Item>New Group</Dropdown.Item> */}
                 <Dropdown.Item onClick={handleLogout} data-testid="logoutDropdown">Logout</Dropdown.Item>
                 <Dropdown.Item href='/profile'>Settings</Dropdown.Item>
               </Dropdown.Menu>
@@ -364,9 +365,9 @@ function Chat() {
           />
         </Col>
         <Col lg="7" style={{ height: '100vh', background: 'aliceBlue' }} >
-          <div style={{ height: '7vh' }}>
-            {JSON.parse(localStorage.getItem('user')).username} <ReactButton style={{ margin: '10px' }} size="sm" variant="danger" onClick={() => deleteAll()}>DELETE ALL</ReactButton> {deletedMsg}
-          </div>
+           <div style={{ height: '7vh' }}>
+            <p style={{ padding: '10px 0px 0px 0px', fontSize: '20px', fontWeight: 'bold' }}>{currentSelectedChatUser?currentSelectedChatUser:""}</p>
+          </div> 
           <div style={{ height: '82vh' }} className='message-list' id="messageDiv">
             <MessageList
               className="message-list"

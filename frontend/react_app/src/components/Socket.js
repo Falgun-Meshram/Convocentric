@@ -20,7 +20,6 @@ class WebSocketService {
     const webSocketPath = chatId?`${SOCKET_URL}/ws/chat/${chatId}/`:`${SOCKET_URL}/ws/chat/`;
     this.socketRef = new WebSocket(webSocketPath);
     this.socketRef.onopen = () => {
-      console.log("WebSocket open");
     };
     this.socketRef.onmessage = e => {
       this.socketNewMessage(e.data);
@@ -29,7 +28,6 @@ class WebSocketService {
       console.log(e.message);
     };
     this.socketRef.onclose = () => {
-      console.log("WebSocket closed let's reopen");
       this.connect();
     };
   }

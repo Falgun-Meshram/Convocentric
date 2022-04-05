@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import '../css/Signin.css';
 import '../css/Signin.css';
 import axios from 'axios'
+import { response } from 'msw';
 
 export default function Signin() {
 
@@ -27,41 +28,42 @@ export default function Signin() {
     const [wrongUsername, setWrongUsername] = useState(false);
     const [wrongPassword, setWrongPassword] = useState(false);
     const [networkError, setNetworkError] = useState(false);
-    
+
     const redirectPage = (page) => {
         navigate(page)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setWrongUsername(false);
         setWrongPassword(false);
         setNetworkError(false);
-        console.log(process.env.REACT_APP_BASE_URL+'login/');
+        console.log(process.env.REACT_APP_BASE_URL + 'login/');
         const options = {
             method: 'POST',
-            url: process.env.REACT_APP_BASE_URL+'login/',
+            url: process.env.REACT_APP_BASE_URL + 'login/',
             data: formData
         };
-        axios.request(options).then(function (response) {
+        try {
+            const response = await axios.request(options)
             setLoading(false);
-            if(response.data.ok){
+            if (response.data.ok) {
                 setShow(true);
                 let user = response.data.user;
                 localStorage.setItem('isAuth', true);
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("user", JSON.stringify(user));
                 redirectPage('/chat');
-            }else{
+            } else {
                 setWrongPassword(true);
                 console.error('Some error occured.');
             }
-        }).catch(function (error) {
-            console.error(error);
+        } catch (error) {
             setNetworkError(true);
             setLoading(false);
-        });
+            console.error('Some error occured.');
+        }
     }
 
     return (

@@ -1,3 +1,4 @@
+from pickle import TRUE
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import User, Chat
@@ -9,6 +10,7 @@ from rest_framework import status
 from rest_framework import permissions, status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+from .socket_views import get_user, get_current_chat
 
 # LOGIN
 @api_view(["POST"])
@@ -109,6 +111,63 @@ def get_all_users(request):
         return Response({'ok':True, 'users': all_users})
 
 
+# GET ALL CHATS
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_all_chats(request):
+
+    # get all chats
+    all_chats = Chat.objects.all()
+    chats = ChatSerializer(all_chats, many=True).data
+
+    return Response({'ok': True, 'chats': chats})
+
+# CREATE A CHAT
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_chat(request):
+
+    post_data = request.data
+    sender_id = post_data['senderId']
+    reciever_id = post_data['recieverId']
+    if sender_id and reciever_id:
+        chat = Chat()
+        chat.save()
+        sender = get_user(sender_id)
+        reciever = get_user(reciever_id)
+        chat.participants.add(sender)
+        chat.participants.add(reciever)
+        return Response({'ok': True, 'chat_id': chat.id }, status=status.HTTP_201_CREATED)
+    else:
+        return Response({'ok': False }, status=status.HTTP_404_NOT_FOUND)
+
+# GET CURRENT CHAT
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_chat(request, pk):
+
+    try:
+        chat = get_current_chat(pk)
+        return Response({ 'ok': True, 'chat_id': chat.id }, status=status.HTTP_200_OK)
+    except Chat.DoesNotExist:
+        return Response({ 'ok': False}, status=status.HTTP_404_NOT_FOUND)
+    
+    
+# DELETE CHAT
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_chat(request, pk):
+
+    chat = get_current_chat(pk)
+    if chat:
+        
+        chat = Chat.objects.get(pk=pk)
+        chat.participants.clear()
+        chat.delete()
+        return Response({ 'ok': True}, status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response({ 'ok': False}, status=status.HTTP_404_NOT_FOUND)
+
 # DELETE ALL CHATS
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
@@ -117,6 +176,7 @@ def delete_all_chats(request):
     chats = Chat.objects.all()
     for chat_obj in chats:
         chat_obj.participants.clear()
-
+        
     Chat.objects.all().delete()
-    return Response({'ok':True })
+
+    return Response({'ok':True }, status=status.HTTP_204_NO_CONTENT)

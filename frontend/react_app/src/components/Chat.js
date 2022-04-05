@@ -94,44 +94,6 @@ function Chat() {
     } catch (err) {
       console.log(err);
     }
-    // axiosInstance.request(options).then((res) => {
-    //   let data = [];
-    //   let currentChatIds = [];
-    //   let chatUserDict = [];
-    //   console.log('`````````````````````');
-    //   console.log(res);
-    //   res.data.users.map((item) => {
-    //     if (item.chatId) {
-    //       currentChatIds.push(item.chatId);
-    //       chatUserDict.push({ 'userId': item.id, 'chatId': item.chatId ? item.chatId : 0 });
-    //     }
-    //     data.push({
-    //       title: onlineUserDict[item.id] ? `${item.username} 🟢` : `${item.username}`,
-    //       id: String(item.id),
-    //       avatar: 'https://facebook.github.io/react/img/logo.svg',
-    //       alt: 'Reactjs',
-    //       subtitle: 'What are you doing?',
-    //       date: new Date(),
-    //       unread: 0,
-    //       chatId: item['chatId'] ? item['chatId'] : 0
-    //     })
-
-    //   })
-    //   console.log(data);
-    //   localStorage.setItem('users', JSON.stringify(data));
-    //   localStorage.setItem('chatUserDict', JSON.stringify(chatUserDict));
-    //   let currentPath = window.location.href.split('/');
-    //   let currentChatId = currentPath.length > 4 ? currentPath[4] : null;
-    //   setDummy(new Date())
-    //   if (currentChatIds.includes(currentChatId)) {
-    //     redirectPage("/chat/" + data.chat_id);
-    //     window.history.replaceState(null, "Chat Room", "/chat/"+data.chat_id);
-    //   } else {
-    //     redirectPage("/chat");
-    //   }
-    // }).catch((err) => {
-    //   console.log(err);
-    // })
   }
 
   const initOnline = (status) => {
@@ -523,7 +485,7 @@ function Chat() {
   const handleEnterBtn = (e) => {
     let code = e.keyCode || e.which;
     console.log(code)
-    if(code === 13){
+    if (code === 13) {
       handleSubmit();
     }
   }
@@ -780,13 +742,14 @@ function Chat() {
   }
 
   const handleSubmit = (e) => {
-    
+
     setUserMessage("");
     // currChatId, message, senderId, recieverId
     const recieverId = parseInt(localStorage.getItem('reciever'))
     // const chatUserDict = JSON.parse(localStorage.getItem('chatUserDict'));
     const chatId = parseInt(window.location.href.split("/")[4])
     const userId = JSON.parse(localStorage.getItem('user')).id;
+    console.log(window.location.href);
     console.log(chatId);
     console.log(userMessage);
     console.log(userId);
@@ -827,12 +790,12 @@ function Chat() {
           <div style={{ height: '7vh' }} className='navBar'>
             <Image roundedCircle src='https://picsum.photos/200' style={{ 'width': '8%' }} />
             <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
+              <Dropdown.Toggle variant="success" id="dropdown-basic" data-testid="dropdown">
                 <FontAwesomeIcon icon={faEllipsisVertical} />
               </Dropdown.Toggle>
               <Dropdown.Menu>
                 <Dropdown.Item>New Group</Dropdown.Item>
-                <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                <Dropdown.Item onClick={handleLogout} data-testid="logoutDropdown">Logout</Dropdown.Item>
                 <Dropdown.Item href='/profile' >Settings</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
@@ -880,8 +843,8 @@ function Chat() {
                   text='Send' />
               </Col>
             </Row>
-            
-            
+
+
           </div>
         </Col>
       </Row>

@@ -101,7 +101,7 @@ describe("<Signin>", () => {
 
         userEvent.click(screen.getByText("Sign In"))
 
-        const c = await screen.findByText(/Network Error/i);
+        const c = await screen.findByText(/Network Error!/i);
         expect(c).toBeInTheDocument();
 
     })

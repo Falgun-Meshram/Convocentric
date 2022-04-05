@@ -133,9 +133,9 @@ export default function Signin() {
                                     <Spinner animation="border" />
                                 </div>
                                     :
-                                    <Col
+                                    <Col className='text-center'
 
-                                        xs={12} sm={12} md={{ offset: 6, span: 6 }} lg={{ offset: 3, span: 5 }} xl={{ offset: 3, span: 5 }}>
+                                    >
                                         <Button type="submit" size="lg" className="btn btn-primary btn-block">Sign In</Button>
                                     </Col>
                                 }
@@ -157,8 +157,8 @@ export default function Signin() {
 
                             <Row style={{ margin: '10px 0px 0px 0px', padding: '0px' }}>
                                 <Col xs={12} sm={12} md={12} lg={12} xl={12}>
-                                    <p style={{ margin: '0px', color: '#2A4CBF', padding: '15px 20px 5px 0px', fontSize: '15px', textAlign: 'center' }}>Don’t have an account yet? </p>
-                                    <p onClick={() => redirectPage('/signup')} style={{ cursor: 'pointer', margin: '0px', color: '#1C3FB5', padding: '0px 20px 0px 0px', fontSize: '22px', textAlign: 'center' }}>Create an account</p>
+                                    <p style={{ margin: '0px', color: '#2A4CBF', fontSize: '15px', textAlign: 'center' }}>Don’t have an account yet? </p>
+                                    <p onClick={() => redirectPage('/signup')} style={{ cursor: 'pointer', margin: '0px', color: '#1C3FB5', fontSize: '22px', textAlign: 'center' }}>Create an account</p>
                                 </Col>
                             </Row>
 

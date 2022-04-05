@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
-import { Col, Container, Row, Dropdown, Image, Button as ReactButton } from 'react-bootstrap';
+import { Col, Container, Row, Dropdown, Image } from 'react-bootstrap';
 import { ChatList, MessageList, Button } from 'react-chat-elements';
 import { useNavigate } from 'react-router-dom';
 import WebSocketInstance from "./Socket";
@@ -21,13 +21,16 @@ function Chat() {
   const [currentChatId, setChatId] = useState({
     id: "",
   });
+  const [currentChat, setCurrentChat] = useState({});
   const [dummy, setDummy] = useState("");
   const [currentSelectedChatUser, setCurrentSelectedChatUser] = useState("");
   const userList = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
-
+  const [userNameDict, setUserNameDict] = useState({});
+  
   const getUsers = () => { return userList }
 
   useEffect(() => {
+    localStorage.setItem('currentChatId', "");
     initWebsocket();
     let user = {};
     if (localStorage.getItem('user')) {
@@ -59,8 +62,9 @@ function Chat() {
       let data = [];
       let currentChatIds = [];
       let chatUserDict = [];
-
+      let userNameDict = {};
       res.data.users.map((item) => {
+        userNameDict[item.username] = item.id;
         if (item.chatId) {
           currentChatIds.push(item.chatId);
           chatUserDict.push({ 'userId': item.id, 'chatId': item.chatId ? item.chatId : 0 });
@@ -69,6 +73,7 @@ function Chat() {
           title: onlineUserDict[item.id] ? `${item.username} 🟢` : `${item.username.replaceAll("🟢", "")}`,
           id: String(item.id),
           avatar: item.profile_picture?item.profile_picture:defaultProfilePictureImageDataUri,
+          // subtitle: item.last_message?item.last_message:'No messages yet !',
           alt: 'Profile Picture',
           date: new Date(),
           unread: 0,
@@ -76,6 +81,7 @@ function Chat() {
         })
 
       })
+      setUserNameDict(userNameDict);
       localStorage.setItem('users', JSON.stringify(data));
       localStorage.setItem('chatUserDict', JSON.stringify(chatUserDict));
       let currentPath = window.location.href.split('/');
@@ -149,6 +155,7 @@ function Chat() {
     let currentClickedChatId = parseInt(chat.chatId);
     let currUserObj = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : [];
     setCurrentSelectedChatUser(chat.title);
+    setCurrentChat(chat);
     let currChatUserDict = localStorage.getItem('chatUserDict') ? JSON.parse(localStorage.getItem('chatUserDict')) : [];
     let existingChatId = 0;
     localStorage.setItem("reciever", recieverId.toString())
@@ -232,8 +239,17 @@ function Chat() {
 
 
   const addMessageCallback = (data, chatMessages, getUsers) => {
-   
+    
     let chatMessagesDict = localStorage.getItem('chatMessagesDict') ? JSON.parse(localStorage.getItem('chatMessagesDict')) : [];
+    let allUsers = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : [];
+    let senderId = data['senderId'];
+    let recieverId = data['recieverId'];
+    allUsers.find((item, i) => {
+      if (item.id == senderId || item.id == recieverId) {
+        item.last_message = data.content;
+      }
+    });
+    localStorage.setItem('users', JSON.stringify(allUsers));
     let index;
     chatMessagesDict.find((item, i) => { if (item[data.chat_id]) index = i })
     if (index != undefined) {
@@ -317,27 +333,37 @@ function Chat() {
 
   const handleSubmit = (e) => {
     setUserMessage("");
-    const chatId = parseInt(window.location.href.split("/")[4])
-    newMessageSocketInit(chatId, userMessage, currUser.id, currentChatId.id);
+    const chatId = parseInt(window.location.href.split("/")[4]);
+    if(chatId){
+      let recieverTitle = currentChat.title.replaceAll("🟢", "").trim();
+      let recieverId =  userNameDict[recieverTitle];
+      let senderId = currUser.id;
+      newMessageSocketInit(chatId, userMessage, senderId, recieverId);
+    }
   };
 
   const handleReply = () => {
     // pass
   }
 
-  const getUserMessages = (groupId) => {
+  const getUserMessages = () => {
     const currentChatId = localStorage.getItem('currentChatId');
-    const currentUserId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : 0;
-    let chatMessagesDict = localStorage.getItem('chatMessagesDict') ? JSON.parse(localStorage.getItem('chatMessagesDict')) : [];
-    let userMessages = chatMessagesDict.find(i => i[currentChatId])
-    let t = {}
-    let msg = []
-    if (userMessages) {
-      userMessages[currentChatId].map((i) => { t = { position: i.author_id === currentUserId ? 'right' : 'left', type: 'text', text: i.content, date: new Date(i.timestamp), title: i.author, }; msg.push(t) })
-      return msg.reverse();
-    }
-    else
+    if(currentChatId){
+      const currentUserId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).id : 0;
+      let chatMessagesDict = localStorage.getItem('chatMessagesDict') ? JSON.parse(localStorage.getItem('chatMessagesDict')) : [];
+      let userMessages = chatMessagesDict.find(i => i[currentChatId])
+      let t = {}
+      let msg = []
+      if (userMessages) {
+        userMessages[currentChatId].map((i) => { t = { position: i.author_id === currentUserId ? 'right' : 'left', type: 'text', text: i.content, date: new Date(i.timestamp), title: i.author, }; msg.push(t) })
+        return msg.reverse();
+      }
+      else{
+        return []
+      }
+    }else{
       return []
+    }
   };
 
 
@@ -361,7 +387,7 @@ function Chat() {
           <ChatList
             className="chat-list"
             onClick={handleConversationClick}
-            dataSource={userList}
+            dataSource={localStorage.getItem('users')?JSON.parse(localStorage.getItem('users')):[]}
           />
         </Col>
         <Col lg="7" style={{ height: '100vh', background: 'aliceBlue' }} >
@@ -373,7 +399,7 @@ function Chat() {
               className="message-list"
               lockable
               toBottomHeight="100%"
-              dataSource={getUserMessages(currentChatId)}
+              dataSource={getUserMessages()}
               onReplyClick={handleReply}
 
             />
@@ -381,8 +407,9 @@ function Chat() {
 
           <div className='input'>
             <Row style={{ margin: '0px', padding: '0px' }}>
-              <Col xs={9} sm={9} md={9} lg={10} xl={10}>
+              <Col xs={9} sm={9} md={9} lg={10} xl={11}>
                 <input
+                  disabled={!localStorage.getItem('currentChatId')}
                   className="form-control"
                   style={{ zIndex: '10' }}
                   placeholder="Type here..."
@@ -392,11 +419,11 @@ function Chat() {
                   onKeyPress={handleEnterBtn}
                 />
               </Col>
-              <Col xs={3} sm={3} md={3} lg={2} xl={2}>
+              <Col xs={3} sm={3} md={3} lg={1} xl={1}>
                 <Button
                   onClick={handleSubmit}
                   color='white'
-                  backgroundColor='black'
+                  backgroundColor='#198753'
                   text='Send' />
               </Col>
             </Row>

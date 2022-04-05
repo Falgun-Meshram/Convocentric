@@ -24,7 +24,6 @@ export default function Signin() {
     const [loading, setLoading] = useState(false);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
-    const [wrongUsername, setWrongUsername] = useState(false);
     const [wrongPassword, setWrongPassword] = useState(false);
     const [networkError, setNetworkError] = useState(false);
 
@@ -35,7 +34,6 @@ export default function Signin() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setWrongUsername(false);
         setWrongPassword(false);
         setNetworkError(false);
         const options = {

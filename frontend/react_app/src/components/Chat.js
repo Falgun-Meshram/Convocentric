@@ -150,7 +150,23 @@ function Chat() {
     initWebsocket(chatId, message, true);
   }
 
+  const setChatBackgroundMethod = (chat) => {
+    // Selected Chat background 
+    let allChatElements = [...document.getElementsByClassName('rce-container-clist chat-list')[0].childNodes];
+    let chatTitle = chat.title;
+    allChatElements.map(item => {
+      let currEle = item.childNodes[0];
+      if(item.innerText.replaceAll(" ", "") == chatTitle.replaceAll(" ", "")){
+        currEle.style.setProperty('background-color', '#E8E8E8', 'important');
+      }else{
+        currEle.style.setProperty('background-color', 'white', 'important');
+      }
+    })
+  }
+
   const handleConversationClick = (chat) => {
+    
+    setChatBackgroundMethod(chat);
     let recieverId = parseInt(chat.id);
     let currentClickedChatId = parseInt(chat.chatId);
     let currUserObj = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : [];
